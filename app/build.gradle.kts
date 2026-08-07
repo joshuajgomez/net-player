@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.compose.constraintlayout)
 
     implementation(libs.bundles.tv.compose)
+//    implementation(libs.bundles.hilt)
+    implementation(libs.bundles.media3)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.joshgm3z.netplayer.ui.screen.PlayerScreen
 import com.joshgm3z.netplayer.ui.theme.NetPlayerTheme
 
 class HomeActivity : ComponentActivity() {
@@ -19,29 +20,8 @@ class HomeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NetPlayerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                PlayerScreen()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NetPlayerTheme {
-        Greeting("Android")
     }
 }
