@@ -19,6 +19,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val versionOverride = project.findProperty("versionCodeOverride") as? String
+        versionCode = versionOverride?.toInt() ?: 1
+        val versionNameOverride = project.findProperty("versionNameOverride") as? String
+        versionName = versionNameOverride ?: "1.0-compose-default"
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../security/default_keystore")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") //
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
     }
 
     buildTypes {
