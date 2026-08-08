@@ -59,6 +59,11 @@ android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
+    packaging {
+        resources {
+            pickFirsts += "META-INF/gradle/incremental.annotation.processors"
+        }
+    }
 }
 
 dependencies {
@@ -79,7 +84,7 @@ dependencies {
     implementation(libs.bundles.tv.compose)
     implementation(libs.bundles.media3)
 
-    implementation(libs.hilt.android)
+    implementation(libs.bundles.hilt)
     kapt(libs.hilt.compiler)
 
     implementation(libs.room.runtime)

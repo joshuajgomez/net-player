@@ -14,7 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.joshgm3z.netplayer.ui.screen.HomeScreen
 import com.joshgm3z.netplayer.ui.screen.PlayerScreen
 import com.joshgm3z.netplayer.ui.theme.NetPlayerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,8 @@ import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,13 +29,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
+import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
+import com.joshgm3z.netplayer.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +46,8 @@ fun HomeScreen() {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        VideoLinks()
+        val videoLinks by viewModel.videoLinkState.collectAsState()
+        VideoLinks(videoLinks)
         QrCode()
     }
 }
@@ -73,7 +80,7 @@ fun QrCode() {
 }
 
 @Composable
-fun VideoLinks() {
+fun VideoLinks(videoLinks: List<VideoLink>) {
     Column {
         Text(
             text = "Video links",
@@ -82,7 +89,7 @@ fun VideoLinks() {
         )
         Spacer(Modifier.size(10.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(10) {
+            items(videoLinks) {
                 VideoLink(it)
             }
         }
@@ -90,7 +97,7 @@ fun VideoLinks() {
 }
 
 @Composable
-fun VideoLink(x0: Int) {
+fun VideoLink(videoLink: VideoLink) {
     ConstraintLayout(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
@@ -116,7 +123,7 @@ fun VideoLink(x0: Int) {
                 .padding(5.dp)
         )
         Text(
-            text = "Video Title $x0",
+            text = videoLink.title,
             style = typography.titleMedium,
             color = textColor(),
             overflow = TextOverflow.Ellipsis,
@@ -127,7 +134,7 @@ fun VideoLink(x0: Int) {
             },
         )
         Text(
-            text = "https://www.youtube.com/watch?v=dQw4w9WgXcQ?v=dQw4w9WgXcQ?v=dQw4w9WgXcQ",
+            text = videoLink.url,
             style = typography.bodyLarge,
             color = subTextColor(),
             overflow = TextOverflow.Ellipsis,
