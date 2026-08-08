@@ -1,0 +1,162 @@
+package com.joshgm3z.netplayer.viewmodel
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.joshgm3z.netplayer.BuildConfig
+import com.joshgm3z.netplayer.ui.util.ApkInstaller
+import com.joshgm3z.netplayer.ui.util.DownloadState
+import com.joshgm3z.netplayer.ui.util.FileDownloader
+import com.joshgm3z.netplayer.util.Logger
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
+import java.lang.NumberFormatException
+import javax.inject.Inject
+
+data class SelfUpdateUiState(
+    val title: String = "",
+    val subtitle: String? = null,
+    val enableButtons: Boolean = false,
+    val buttonAction: ButtonAction = ButtonAction.UpdateNow,
+)
+
+private const val appUrl =
+    "https://github.com/joshuajgomez/net-player/releases/download/main-release/NetPlayer-app.apk"
+private const val appTagUrl =
+    "https://api.github.com/repos/joshuajgomez/net-player/releases/latest"
+
+enum class ButtonAction(val text: String) {
+    UpdateNow("Update now"),
+    CheckAgain("Check again"),
+    Install("Install"),
+    TryAgain("Try again")
+}
+
+@HiltViewModel
+class SelfUpdateViewModel
+@Inject constructor(
+    private val fileDownloader: FileDownloader,
+    private val apkInstaller: ApkInstaller
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(SelfUpdateUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private var downloadedFile: File? = null
+
+    init {
+        checkUpdates()
+    }
+
+    fun onButtonClick() {
+        when (_uiState.value.buttonAction) {
+            ButtonAction.CheckAgain -> checkUpdates()
+            ButtonAction.Install -> downloadedFile?.let { apkInstaller.installApk(it) }
+            else -> downloadUpdate()
+        }
+    }
+
+    private fun checkUpdates() {
+        _uiState.update {
+            it.copy(
+                title = "Checking app updates",
+                enableButtons = false
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(2000)
+            val releaseName = fileDownloader.getLatestApkReleaseName(appTagUrl)
+            Logger.debug("releaseName = [$releaseName]")
+            _uiState.update {
+                if (BuildConfig.VERSION_NAME.isOlderThan(releaseName)) {
+                    it.copy(
+                        title = "Update available",
+                        subtitle = "New version $releaseName is available for download",
+                        enableButtons = true,
+                        buttonAction = ButtonAction.UpdateNow
+                    )
+                } else {
+                    it.copy(
+                        title = "App is up to date",
+                        enableButtons = true,
+                        buttonAction = ButtonAction.CheckAgain
+                    )
+                }
+            }
+        }
+    }
+
+    private fun downloadUpdate() {
+        downloadedFile = null
+        _uiState.update {
+            it.copy(
+                title = "Downloading update",
+                subtitle = "Please wait while the update is downloaded",
+                enableButtons = false,
+            )
+        }
+        fileDownloader.startDownload(
+            fileUrl = appUrl,
+            onUpdate = {
+                Logger.debug("Download state: $it")
+                _uiState.update { uiState ->
+                    when (it) {
+                        DownloadState.Completed -> {
+                            informInstallErrorAfterDelay()
+                            uiState.copy(
+                                title = "Update file downloaded",
+                                subtitle = "Trying to install automatically",
+                            )
+                        }
+
+                        DownloadState.Error -> uiState.copy(
+                            title = "Error downloading update",
+                            subtitle = "Cannot download update right now. Try again later",
+                            enableButtons = true,
+                            buttonAction = ButtonAction.TryAgain
+                        )
+
+                        else -> uiState
+                    }
+                }
+            },
+            onDownloadComplete = {
+                downloadedFile = it
+                apkInstaller.installApk(it)
+            }
+        )
+    }
+
+    private fun informInstallErrorAfterDelay() {
+        viewModelScope.launch {
+            delay(3000)
+            _uiState.update {
+                it.copy(
+                    subtitle = "Tap install to complete update",
+                    enableButtons = true,
+                    buttonAction = ButtonAction.Install
+                )
+            }
+        }
+    }
+}
+
+private fun String.isOlderThan(version: String?): Boolean {
+    return try {
+        if (version == null) return false
+        this.getVersionCode() < version.getVersionCode()
+    } catch (e: NumberFormatException) {
+        Logger.error(e.message.toString())
+        false
+    }
+}
+
+fun String.getVersionCode(): Int = replace(Regex("[^0-9]"), "")
+    .toIntOrNull() ?: 0

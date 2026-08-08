@@ -1,0 +1,41 @@
+package com.joshgm3z.netplayer.ui
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
+import com.joshgm3z.netplayer.ui.screen.AppUpdateDialog
+import com.joshgm3z.netplayer.ui.screen.HomeScreen
+import com.joshgm3z.netplayer.ui.screen.PlayerScreen
+import kotlinx.serialization.Serializable
+
+open class NavDest {
+    @Serializable
+    object Home : NavDest()
+
+    @Serializable
+    class Player(val url: String) : NavDest()
+
+    @Serializable
+    object AppUpdate : NavDest()
+}
+
+@Composable
+fun TvNavHost() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = NavDest.Home
+    ) {
+        composable<NavDest.Home> {
+            HomeScreen()
+        }
+        composable<NavDest.Player> {
+            PlayerScreen()
+        }
+        dialog<NavDest.AppUpdate> {
+            AppUpdateDialog(onBackPress = { navController.popBackStack() })
+        }
+    }
+}

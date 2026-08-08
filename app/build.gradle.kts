@@ -55,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     room {
         schemaDirectory("$projectDir/schemas")
@@ -80,6 +81,7 @@ dependencies {
 
     implementation(libs.androidx.compose.icons)
     implementation(libs.androidx.compose.constraintlayout)
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.bundles.tv.compose)
     implementation(libs.bundles.media3)

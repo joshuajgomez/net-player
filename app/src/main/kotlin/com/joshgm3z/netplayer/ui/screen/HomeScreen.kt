@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import com.joshgm3z.netplayer.repository.VideoLink
+import com.joshgm3z.netplayer.ui.NavDest
 import com.joshgm3z.netplayer.ui.theme.textColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
@@ -34,13 +35,27 @@ import com.joshgm3z.netplayer.viewmodel.HomeUiState
 import com.joshgm3z.netplayer.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigate: (NavDest) -> Unit = {}
+) {
     val uiState by viewModel.uiState.collectAsState()
-    HomeScreenContent(uiState)
+    HomeScreenContent(
+        uiState = uiState,
+        onVideoLinkClick = {
+            navigate(NavDest.Player(it.url))
+        },
+        onAppUpdateClick = {
+            navigate(NavDest.AppUpdate)
+        })
 }
 
 @Composable
-private fun HomeScreenContent(uiState: HomeUiState) {
+private fun HomeScreenContent(
+    uiState: HomeUiState,
+    onVideoLinkClick: (VideoLink) -> Unit = {},
+    onAppUpdateClick: () -> Unit = {},
+) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +63,7 @@ private fun HomeScreenContent(uiState: HomeUiState) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        VideoLinks(uiState.videoLinks)
+        VideoLinks(uiState.videoLinks, onVideoLinkClick)
         QrCode(uiState.qrCode)
     }
 }
@@ -81,7 +96,10 @@ fun QrCode(qrCode: Bitmap?) {
 }
 
 @Composable
-fun VideoLinks(videoLinks: List<VideoLink>?) {
+fun VideoLinks(
+    videoLinks: List<VideoLink>?,
+    onVideoLinkClick: (VideoLink) -> Unit = {}
+) {
     Column(modifier = Modifier.width(400.dp)) {
         Text(
             text = when {
@@ -95,7 +113,7 @@ fun VideoLinks(videoLinks: List<VideoLink>?) {
         Spacer(Modifier.size(10.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(videoLinks ?: emptyList()) {
-                VideoLink(it)
+                VideoLink(it, onClick = { onVideoLinkClick(it) })
             }
         }
     }
