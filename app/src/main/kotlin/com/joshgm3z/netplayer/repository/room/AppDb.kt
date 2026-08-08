@@ -6,7 +6,7 @@ import com.joshgm3z.netplayer.repository.VideoLink
 
 @Database(
     entities = [VideoLink::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {

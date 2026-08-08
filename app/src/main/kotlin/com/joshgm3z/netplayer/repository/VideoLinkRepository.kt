@@ -13,8 +13,23 @@ class VideoLinkRepository
 @Inject constructor(
     private val videoLinkDao: VideoLinkDao,
     private val firestore: FirestoreWrapper,
-    private val scope: CoroutineScope
+    private val dataStoreWrapper: DatastoreWrapper,
+    private val scope: CoroutineScope,
 ) {
+
+    suspend fun getSessionId(): String =
+        when (val currentSessionId = dataStoreWrapper.getSessionId()) {
+            null -> {
+                val newId = firestore.newDocumentId(
+                    "app_session",
+                    mapOf("added" to System.currentTimeMillis())
+                )
+                dataStoreWrapper.setSessionId(newId)
+                newId
+            }
+
+            else -> currentSessionId
+        }
 
     fun listenToNewVideoLinks(sessionId: String) {
         firestore.listenToDataMap(
@@ -56,5 +71,9 @@ class VideoLinkRepository
 
     suspend fun deleteAll() {
         videoLinkDao.deleteAll()
+    }
+
+    suspend fun deleteSession(sessionId: String) {
+        firestore.deleteDocumentWithId(COLLECTION_VIDEO_LINKS, sessionId)
     }
 }

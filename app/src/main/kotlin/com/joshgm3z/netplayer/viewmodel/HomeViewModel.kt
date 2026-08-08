@@ -29,8 +29,16 @@ class HomeViewModel
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
+    private lateinit var sessionId: String
+
     init {
-        videoLinkRepository.listenToNewVideoLinks("default")
+        viewModelScope.launch {
+            sessionId = videoLinkRepository.getSessionId()
+            videoLinkRepository.listenToNewVideoLinks(sessionId)
+            _uiState.update {
+                it.copy(qrCode = qrCodeRepository.getQrCodeBitmap(sessionId))
+            }
+        }
         viewModelScope.launch {
             videoLinkRepository.videoLinksFlow().collectLatest { videoLinks ->
                 _uiState.update {
@@ -38,12 +46,12 @@ class HomeViewModel
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
         viewModelScope.launch {
-            qrCodeRepository.getQrCodeBitmap()?.let { qrCode ->
-                _uiState.update {
-                    it.copy(qrCode = qrCode)
-                }
-            }
+            videoLinkRepository.deleteSession(sessionId)
         }
     }
 }

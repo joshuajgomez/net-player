@@ -36,4 +36,18 @@ class FirestoreWrapper
             .await()
         return document.id
     }
+
+    suspend fun deleteDocumentWithId(collection: String, documentId: String): Boolean {
+        return try {
+            db.collection(collection)
+                .document(documentId)
+                .delete()
+                .await()
+            Logger.debug("Deleted $collection/$documentId")
+            true
+        } catch (e: Exception) {
+            Logger.error("Failed to delete $collection/$documentId: ${e.message}")
+            false
+        }
+    }
 }

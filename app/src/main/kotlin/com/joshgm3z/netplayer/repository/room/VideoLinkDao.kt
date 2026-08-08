@@ -15,7 +15,7 @@ interface VideoLinkDao {
     @Query("SELECT * FROM VideoLink")
     fun getAllFlow(): Flow<List<VideoLink>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(videoLink: VideoLink)
 
     @Delete

@@ -11,26 +11,11 @@ const val ONLINE_INPUT_URL = "https://net-player-487fb.web.app"
 class QrCodeRepository
 @Inject constructor(
     private val firestoreWrapper: FirestoreWrapper,
-    private val dataStoreWrapper: DatastoreWrapper,
 ) {
-    suspend fun getQrCodeBitmap(): Bitmap? {
-        val url = "$ONLINE_INPUT_URL?id=${getSessionId()}"
+    fun getQrCodeBitmap(sessionId: String): Bitmap? {
+        val url = "$ONLINE_INPUT_URL?id=$sessionId"
         return url.getQrCode()
     }
-
-    private suspend fun getSessionId() =
-        when (val currentSessionId = dataStoreWrapper.getSessionId()) {
-            null -> {
-                val newId = firestoreWrapper.newDocumentId(
-                    "app_session",
-                    mapOf("added" to System.currentTimeMillis())
-                )
-                dataStoreWrapper.setSessionId(newId)
-                newId
-            }
-
-            else -> currentSessionId
-        }
 
     private fun String.getQrCode(
         width: Int = 512,
