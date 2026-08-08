@@ -9,6 +9,6 @@ data class VideoLink(
     val url: String,
     val title: String,
     val added: Long,
-    val totaDuration: Long,
+    val totalDuration: Long,
     val playedDuration: Long,
 )

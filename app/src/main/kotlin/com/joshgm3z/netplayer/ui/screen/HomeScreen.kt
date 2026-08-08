@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +56,9 @@ fun HomeScreen(
         },
         onAppUpdateClick = {
             navigate(NavDest.AppUpdate)
+        },
+        onDeleteAllClick = {
+            viewModel.deleteAll()
         })
 }
 
@@ -63,6 +67,7 @@ private fun HomeScreenContent(
     uiState: HomeUiState,
     onVideoLinkClick: (VideoLink) -> Unit = {},
     onAppUpdateClick: () -> Unit = {},
+    onDeleteAllClick: () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.BottomEnd,
@@ -78,6 +83,28 @@ private fun HomeScreenContent(
             VideoLinks(uiState.videoLinks, onVideoLinkClick)
             QrCode(uiState.qrCode)
         }
+        Settings(
+            onAppUpdateClick = onAppUpdateClick,
+            onDeleteAllClick = onDeleteAllClick
+        )
+    }
+}
+
+@Composable
+fun Settings(
+    onAppUpdateClick: () -> Unit,
+    onDeleteAllClick: () -> Unit
+) {
+    Row {
+        Button(onClick = onDeleteAllClick) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null
+            )
+            Spacer(Modifier.size(5.dp))
+            Text("Delete all")
+        }
+        Spacer(Modifier.size(10.dp))
         Button(onClick = onAppUpdateClick) {
             Icon(
                 imageVector = Icons.Default.Replay,

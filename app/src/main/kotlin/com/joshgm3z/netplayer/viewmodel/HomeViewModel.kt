@@ -56,4 +56,10 @@ class HomeViewModel
             videoLinkRepository.deleteSession(sessionId)
         }
     }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            videoLinkRepository.deleteAll()
+        }
+    }
 }

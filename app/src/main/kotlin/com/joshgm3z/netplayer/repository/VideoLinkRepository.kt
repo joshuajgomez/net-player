@@ -35,21 +35,22 @@ class VideoLinkRepository
         firestore.listenToDataMap(
             COLLECTION_VIDEO_LINKS,
             sessionId
-        ) {
-            val url = it["url"] as String
-            val title = if (it.containsKey("title")) it["title"] as String else url.tryToGetTitle()
-
+        ) { map ->
+            val url = map["url"] as String
             if (url.trim().isEmpty()) {
                 Logger.warn("Received invalid URL\"$url\" from Firestore, ignoring.")
                 return@listenToDataMap
             }
+            val title = (map["title"] as? String)?.trim().takeIf { !it.isNullOrEmpty() }
+                ?: url.tryToGetTitle()
+
             scope.launch {
                 videoLinkDao.insert(
                     VideoLink(
                         url = url,
                         title = title,
                         added = System.currentTimeMillis(),
-                        totaDuration = 0,
+                        totalDuration = 0,
                         playedDuration = 0
                     )
                 )

@@ -115,11 +115,11 @@ fun VideoLinkItem(
             text = buildAnnotatedString {
                 val dot = "  •  "
                 append(videoLink.added.relativeTime())
-                if (videoLink.totaDuration > 0) {
+                if (videoLink.totalDuration > 0) {
                     withStyle(style = SpanStyle(color = colorScheme.primary)) {
                         append(dot)
                     }
-                    append(videoLink.totaDuration.toTextTime())
+                    append(videoLink.totalDuration.toTextTime())
                 }
             },
             style = typography.bodySmall,
@@ -133,7 +133,7 @@ fun VideoLinkItem(
             }
         )
         if (videoLink.playedDuration > 0) LinearProgressIndicator(
-            progress = { videoLink.playedDuration.toFloat() / videoLink.totaDuration.toFloat() },
+            progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
             modifier = Modifier
                 .constrainAs(progress) {
                     top.linkTo(metadata.top)
@@ -155,7 +155,7 @@ private fun PreviewVideoLink() {
                 title = "Sample Video Link",
                 url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",
                 added = System.currentTimeMillis() - 30000,
-                totaDuration = 4980000L,
+                totalDuration = 4980000L,
                 playedDuration = 2700000L,
             )
         )

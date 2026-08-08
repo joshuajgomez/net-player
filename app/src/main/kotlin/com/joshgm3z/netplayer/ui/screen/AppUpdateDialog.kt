@@ -98,7 +98,7 @@ fun AppUpdateDialogContent(
                     textAlign = TextAlign.Center
                 )
             }
-        } else CircularProgressIndicator(modifier = Modifier.padding(top = 20.dp))
+        } else CircularProgressIndicator(modifier = Modifier.padding(top = 10.dp))
     }
 }
 
