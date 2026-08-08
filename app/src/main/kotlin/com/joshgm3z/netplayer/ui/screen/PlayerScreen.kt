@@ -28,7 +28,7 @@ import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 
-private val sampleUrl =
+val sampleUrl =
     "https://rd2.seedr.cc/ff_get/3931638/5959460378/The.Drama.2026.1080p.WEBRip.AAC5.1.10bits.x265-Rapta.mkv?st=z3otH1pk1wu9ZgrqqX-GxQ&e=1786223834"
 
 @Composable

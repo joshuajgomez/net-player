@@ -37,7 +37,7 @@ class VideoLinkRepository
             sessionId
         ) {
             val url = it["url"] as String
-            val title = if (it.containsKey("title")) it["title"] as String else "No title"
+            val title = if (it.containsKey("title")) it["title"] as String else url.tryToGetTitle()
 
             if (url.trim().isEmpty()) {
                 Logger.warn("Received invalid URL\"$url\" from Firestore, ignoring.")
@@ -77,3 +77,12 @@ class VideoLinkRepository
         firestore.deleteDocumentWithId(COLLECTION_VIDEO_LINKS, sessionId)
     }
 }
+
+fun String.tryToGetTitle(): String = try {
+    val urlWithoutQuery = this.split("?").first()
+    val title = urlWithoutQuery.substringAfterLast('/')
+    title
+} catch (e: Exception) {
+    ""
+}
+
