@@ -18,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -112,7 +114,9 @@ fun VideoLinkItem(
                 val dot = "  •  "
                 append(videoLink.added.relativeTime())
                 if (videoLink.totaDuration > 0) {
-                    append(dot)
+                    withStyle(style = SpanStyle(color = colorScheme.primary)) {
+                        append(dot)
+                    }
                     append(videoLink.totaDuration.toTextTime())
                 }
             },
