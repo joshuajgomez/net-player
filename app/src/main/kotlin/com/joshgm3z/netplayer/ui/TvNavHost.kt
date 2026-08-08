@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.joshgm3z.netplayer.ui.screen.AppUpdateDialog
 import com.joshgm3z.netplayer.ui.screen.HomeScreen
 import com.joshgm3z.netplayer.ui.screen.PlayerScreen
@@ -15,7 +16,7 @@ open class NavDest {
     object Home : NavDest()
 
     @Serializable
-    class Player(val url: String) : NavDest()
+    class Player(val url: String, val title: String? = null) : NavDest()
 
     @Serializable
     object AppUpdate : NavDest()
@@ -32,7 +33,11 @@ fun TvNavHost() {
             HomeScreen(navigate = { navController.navigate(it) })
         }
         composable<NavDest.Player> {
-            PlayerScreen()
+            val playerRoute = it.toRoute<NavDest.Player>()
+            PlayerScreen(
+                url = playerRoute.url,
+                title = playerRoute.title
+            )
         }
         composable<NavDest.AppUpdate> {
             AppUpdateDialog(onBackPress = { navController.popBackStack() })

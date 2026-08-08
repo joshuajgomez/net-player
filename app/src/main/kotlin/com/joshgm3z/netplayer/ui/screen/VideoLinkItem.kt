@@ -91,13 +91,15 @@ fun VideoLinkItem(
                 .constrainAs(title) {
                     top.linkTo(parent.top)
                     start.linkTo(icon.end, margin = 10.dp)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
                 }
                 .padding(bottom = 5.dp),
         )
 
         Text(
             text = videoLink.url,
-            style = typography.bodyLarge,
+            style = typography.bodySmall,
             color = textColor().copy(alpha = 0.5f),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -120,7 +122,7 @@ fun VideoLinkItem(
                     append(videoLink.totaDuration.toTextTime())
                 }
             },
-            style = typography.bodyLarge,
+            style = typography.bodySmall,
             color = subTextColor(),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

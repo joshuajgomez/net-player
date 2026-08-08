@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.view.LayoutInflater
 import android.widget.ImageButton
-import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-//import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
@@ -26,45 +24,20 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-//import androidx.navigation.NavController
 import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
-//import dagger.hilt.android.UnstableApi
 
 private val sampleUrl =
     "https://rd2.seedr.cc/ff_get/3931638/5959460378/The.Drama.2026.1080p.WEBRip.AAC5.1.10bits.x265-Rapta.mkv?st=z3otH1pk1wu9ZgrqqX-GxQ&e=1786223834"
 
-val videoUrl = "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-
 @Composable
 fun PlayerScreen(
-//    viewModel: PlaybackViewModel = hiltViewModel(),
-//    trackViewModel: TrackSelectorViewModel,
-//    navController: NavController
+    url: String,
+    title: String?,
 ) {
-    fun onBackPress() {
-        /*navController.previousBackStackEntry
-            ?.savedStateHandle
-            ?.set("selectedStreamId", viewModel.streamId)*/
-//        navController.popBackStack()
-    }
-//    BackHandler {
-//        onBackPress()
-//    }
-
-    /*val uiState by viewModel.playbackUiState.collectAsState()
-    uiState?.let {
-        val videoTitle = when (it.playbackItem) {
-            is StreamData -> (it.playbackItem as StreamData).name
-            is Episode -> (it.playbackItem as Episode).title
-            else -> throw Exception("Unknown type of playbackItem")
-        }
-        trackViewModel.title = videoTitle
-    }
-    uiState?.videoUrl?.let { it ->*/
     PlaybackScreenContent(
-        videoUrl = sampleUrl,
+        videoUrl = url,
         resumePosition = null/*uiState?.resumePosition*/,
         updateLastPlayedPosition = {
 //                viewModel.updateLastPlayedPosition(it)
@@ -77,9 +50,7 @@ fun PlayerScreen(
                 )
             )*/
         },
-        onBackPress = {
-            onBackPress()
-        },
+        onBackPress = {},
         onCaptionsClicked = {
             /*trackViewModel.loadTracksOfType(TrackType.Subtitle)
             navController.navigate(NavMainDestination.TrackSelector)*/
@@ -108,7 +79,8 @@ private fun PlaybackScreenContent(
 ) {
     val context = LocalContext.current
 
-    val userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    val userAgent =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
     // 2. Create a DataSource Factory with the User-Agent and common headers to avoid 403
     val dataSourceFactory = remember {
