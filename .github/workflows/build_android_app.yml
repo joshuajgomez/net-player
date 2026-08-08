@@ -69,7 +69,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG_NAME: master-release
+          TAG_NAME: main-release
         run: |
           # Delete the release if it exists
           gh release delete $TAG_NAME --yes || echo "No release found"
@@ -84,16 +84,15 @@ jobs:
           mkdir -p release_artifacts
           cp app/build/outputs/apk/release/*.apk release_artifacts/NetPlayer-app.apk
 
-      - name: Update master-release
+      - name: Update main-release
         if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: master-release
+          tag_name: main-release
           name: ${{ env.RELEASE_TAG }}
-          prerelease: true
           files: release_artifacts/NetPlayer-app.apk
           body: |
-            ## master release channel
+            ## main release channel
             This release is automatically updated on every push to the master branch.
             **Built on:** ${{ github.event.head_commit.timestamp }}
             **Commit:** ${{ github.sha }}
