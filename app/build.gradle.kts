@@ -1,9 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    id("androidx.room")
+    kotlin("kapt")
 }
 
 android {
@@ -46,8 +50,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
     buildFeatures {
         compose = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
@@ -67,8 +77,14 @@ dependencies {
     implementation(libs.androidx.compose.constraintlayout)
 
     implementation(libs.bundles.tv.compose)
-//    implementation(libs.bundles.hilt)
     implementation(libs.bundles.media3)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)

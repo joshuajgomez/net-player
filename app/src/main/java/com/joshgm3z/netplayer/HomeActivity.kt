@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.joshgm3z.netplayer.ui.screen.HomeScreen
 import com.joshgm3z.netplayer.ui.screen.PlayerScreen
 import com.joshgm3z.netplayer.ui.theme.NetPlayerTheme
 
@@ -20,7 +21,7 @@ class HomeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NetPlayerTheme {
-                PlayerScreen()
+                HomeScreen()
             }
         }
     }
