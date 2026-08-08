@@ -1,7 +1,10 @@
 package com.joshgm3z.netplayer.ui.screen
 
+import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,13 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,9 +49,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val videoLinks by viewModel.videoLinkState.collectAsState()
-        VideoLinks(videoLinks)
-        QrCode()
+        val uiState by viewModel.uiState.collectAsState()
+        VideoLinks(uiState.videoLinks)
+        QrCode(uiState.qrCode)
     }
 }
 
@@ -62,12 +65,21 @@ fun subTextColor() = colorScheme.onSurface.copy(alpha = 0.8f)
 fun cardColor() = colorScheme.onBackground.copy(alpha = 0.1f)
 
 @Composable
-fun QrCode() {
+fun QrCode(qrCode: Bitmap?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Surface(
-            color = colorScheme.primary,
-            modifier = Modifier.size(300.dp)
-        ) {}
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .background(color = colorScheme.primary)
+        ) {
+            qrCode?.let {
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
         Text(
             text = "Scan the QR code to add new urls here",
             color = textColor(),

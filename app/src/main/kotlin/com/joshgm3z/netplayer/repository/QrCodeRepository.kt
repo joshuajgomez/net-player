@@ -6,7 +6,7 @@ import com.joshgm3z.netplayer.util.Logger
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import javax.inject.Inject
 
-const val ONLINE_INPUT_URL = "https://rocktv-b1cf5.web.app"
+const val ONLINE_INPUT_URL = "https://net-player-487fb.web.app"
 
 class QrCodeRepository
 @Inject constructor(
