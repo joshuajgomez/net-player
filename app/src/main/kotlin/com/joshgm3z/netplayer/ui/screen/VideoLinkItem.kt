@@ -37,15 +37,16 @@ import com.joshgm3z.netplayer.util.relativeTime
 import com.joshgm3z.netplayer.util.toTextTime
 
 @Composable
-fun VideoLink(
+fun VideoLinkItem(
+    modifier: Modifier = Modifier,
     videoLink: VideoLink,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .border(
                 width = 2.dp,
@@ -143,7 +144,7 @@ fun VideoLink(
 @Composable
 private fun PreviewVideoLink() {
     DarkSurface {
-        VideoLink(
+        VideoLinkItem(
             videoLink = VideoLink(
                 title = "Sample Video Link",
                 url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,14 +36,12 @@ fun AppUpdateDialog(
     onBackPress: () -> Unit,
     viewModel: SelfUpdateViewModel = hiltViewModel()
 ) {
-    Dialog(onDismissRequest = { onBackPress() }) {
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-        AppUpdateDialogContent(
-            uiState = uiState,
-            onDismissClick = onBackPress,
-            onActionClick = { viewModel.onButtonClick() }
-        )
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    AppUpdateDialogContent(
+        uiState = uiState,
+        onDismissClick = onBackPress,
+        onActionClick = { viewModel.onButtonClick() }
+    )
 }
 
 @Composable
@@ -53,9 +52,8 @@ fun AppUpdateDialogContent(
 ) {
     Row(
         modifier = Modifier
-            .padding(20.dp)
-            .height(150.dp)
-            .width(600.dp),
+            .padding(100.dp)
+            .fillMaxSize(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -71,34 +69,29 @@ fun AppUpdateDialogContent(
                 color = subTextColor(),
             )
         }
-        AnimatedVisibility(visible = !uiState.enableButtons) {
-            CircularProgressIndicator()
-        }
-        AnimatedVisibility(visible = uiState.enableButtons) {
-            Column {
-                Button(
-                    onClick = onActionClick,
-                    modifier = Modifier.width(150.dp)
-                ) {
-                    Text(
-                        uiState.buttonAction.text,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Spacer(Modifier.size(10.dp))
-                Button(
-                    onClick = onDismissClick,
-                    modifier = Modifier.width(150.dp)
-                ) {
-                    Text(
-                        "Dismiss",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+        if (uiState.enableButtons) Column {
+            Button(
+                onClick = onActionClick,
+                modifier = Modifier.width(200.dp)
+            ) {
+                Text(
+                    uiState.buttonAction.text,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
-        }
+            Spacer(Modifier.size(10.dp))
+            Button(
+                onClick = onDismissClick,
+                modifier = Modifier.width(200.dp)
+            ) {
+                Text(
+                    "Dismiss",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else CircularProgressIndicator()
     }
 }
 

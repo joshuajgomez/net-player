@@ -49,9 +49,9 @@ fun PlayerScreen(
             ?.set("selectedStreamId", viewModel.streamId)*/
 //        navController.popBackStack()
     }
-    BackHandler {
-        onBackPress()
-    }
+//    BackHandler {
+//        onBackPress()
+//    }
 
     /*val uiState by viewModel.playbackUiState.collectAsState()
     uiState?.let {

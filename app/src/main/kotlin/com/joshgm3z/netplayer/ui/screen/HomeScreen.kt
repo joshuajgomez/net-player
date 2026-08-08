@@ -14,15 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,7 +37,6 @@ import androidx.tv.material3.MaterialTheme.typography
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
 import com.joshgm3z.netplayer.ui.theme.subTextColor
-import com.joshgm3z.netplayer.ui.theme.textColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.viewmodel.HomeUiState
@@ -119,6 +121,11 @@ fun VideoLinks(
     videoLinks: List<VideoLink>?,
     onVideoLinkClick: (VideoLink) -> Unit = {}
 ) {
+    val firstItemRequester = remember { FocusRequester() }
+    LaunchedEffect(videoLinks) {
+        if (!videoLinks.isNullOrEmpty()) firstItemRequester.requestFocus()
+    }
+
     Column(modifier = Modifier.width(450.dp)) {
         if (videoLinks.isNullOrEmpty()) Text(
             text = when {
@@ -130,8 +137,15 @@ fun VideoLinks(
             color = subTextColor(),
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(videoLinks ?: emptyList()) {
-                VideoLink(it, onClick = { onVideoLinkClick(it) })
+            itemsIndexed(videoLinks ?: emptyList()) { index, item ->
+                VideoLinkItem(
+                    videoLink = item,
+                    onClick = { onVideoLinkClick(item) },
+                    modifier = Modifier.then(
+                        if (index != 0) Modifier
+                        else Modifier.focusRequester(firstItemRequester)
+                    )
+                )
             }
         }
     }

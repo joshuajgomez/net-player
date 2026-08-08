@@ -29,12 +29,12 @@ fun TvNavHost() {
         startDestination = NavDest.Home
     ) {
         composable<NavDest.Home> {
-            HomeScreen()
+            HomeScreen(navigate = { navController.navigate(it) })
         }
         composable<NavDest.Player> {
             PlayerScreen()
         }
-        dialog<NavDest.AppUpdate> {
+        composable<NavDest.AppUpdate> {
             AppUpdateDialog(onBackPress = { navController.popBackStack() })
         }
     }
