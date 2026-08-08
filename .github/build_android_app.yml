@@ -90,6 +90,7 @@ jobs:
         with:
           tag_name: master-release
           name: ${{ env.RELEASE_TAG }}
+          prerelease: true
           files: release_artifacts/NetPlayer-app.apk
           body: |
             ## master release channel
