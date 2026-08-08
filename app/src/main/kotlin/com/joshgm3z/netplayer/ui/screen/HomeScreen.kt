@@ -38,18 +38,24 @@ import androidx.tv.material3.MaterialTheme.typography
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
+import com.joshgm3z.netplayer.viewmodel.HomeUiState
 import com.joshgm3z.netplayer.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+    HomeScreenContent(uiState)
+}
+
+@Composable
+private fun HomeScreenContent(uiState: HomeUiState) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(80.dp),
+            .padding(60.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val uiState by viewModel.uiState.collectAsState()
         VideoLinks(uiState.videoLinks)
         QrCode(uiState.qrCode)
     }
@@ -59,7 +65,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 fun textColor() = colorScheme.onSurface
 
 @Composable
-fun subTextColor() = colorScheme.onSurface.copy(alpha = 0.8f)
+fun subTextColor() = colorScheme.onSurface.copy(alpha = 0.5f)
 
 @Composable
 fun cardColor() = colorScheme.onBackground.copy(alpha = 0.1f)
@@ -69,7 +75,7 @@ fun QrCode(qrCode: Bitmap?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(300.dp)
+                .size(250.dp)
                 .background(color = colorScheme.primary)
         ) {
             qrCode?.let {
@@ -93,10 +99,10 @@ fun QrCode(qrCode: Bitmap?) {
 
 @Composable
 fun VideoLinks(videoLinks: List<VideoLink>) {
-    Column {
+    Column(modifier = Modifier.width(400.dp)) {
         Text(
-            text = "Video links",
-            style = typography.headlineLarge,
+            text = if (videoLinks.isEmpty()) "No links yet" else "Links",
+            style = typography.headlineMedium,
             color = textColor(),
         )
         Spacer(Modifier.size(10.dp))
@@ -163,8 +169,17 @@ fun VideoLink(videoLink: VideoLink) {
 
 @DarkPreview
 @Composable
-private fun PreviewHomeScreen() {
+private fun PreviewHomeScreenContent() {
     DarkSurface {
-        HomeScreen()
+        HomeScreenContent(
+            HomeUiState(
+                videoLinks = listOf(
+                    VideoLink("https://example.com/video1", "Video 1", 1202012L, 12121L, 32323L),
+                    VideoLink("https://example.com/video2", "Video 2", 1202012L, 12121L, 32323L),
+                    VideoLink("https://example.com/video3", "Video 3", 1202012L, 12121L, 32323L),
+                ),
+                qrCode = null
+            )
+        )
     }
 }
