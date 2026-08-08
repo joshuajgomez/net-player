@@ -5,18 +5,12 @@ plugins {
 
 android {
     namespace = "com.joshgm3z.netplayer"
-    compileSdk {
-        version = release(37) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.joshgm3z.netplayer"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
