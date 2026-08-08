@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,10 +27,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.tv.material3.Button
+import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
+import com.joshgm3z.netplayer.ui.theme.subTextColor
 import com.joshgm3z.netplayer.ui.theme.textColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
@@ -56,15 +62,28 @@ private fun HomeScreenContent(
     onVideoLinkClick: (VideoLink) -> Unit = {},
     onAppUpdateClick: () -> Unit = {},
 ) {
-    Row(
+    Box(
+        contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
             .fillMaxSize()
-            .padding(60.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(30.dp),
     ) {
-        VideoLinks(uiState.videoLinks, onVideoLinkClick)
-        QrCode(uiState.qrCode)
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VideoLinks(uiState.videoLinks, onVideoLinkClick)
+            QrCode(uiState.qrCode)
+        }
+        Button(onClick = onAppUpdateClick) {
+            Icon(
+                imageVector = Icons.Default.Replay,
+                contentDescription = null
+            )
+            Spacer(Modifier.size(5.dp))
+            Text("Update App")
+        }
     }
 }
 
@@ -73,7 +92,7 @@ fun QrCode(qrCode: Bitmap?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(250.dp)
+                .size(200.dp)
                 .background(color = colorScheme.primary)
         ) {
             qrCode?.let {
@@ -86,7 +105,7 @@ fun QrCode(qrCode: Bitmap?) {
         }
         Text(
             text = "Scan the QR code to add new urls here",
-            color = textColor(),
+            color = subTextColor(),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(20.dp)
@@ -100,17 +119,16 @@ fun VideoLinks(
     videoLinks: List<VideoLink>?,
     onVideoLinkClick: (VideoLink) -> Unit = {}
 ) {
-    Column(modifier = Modifier.width(400.dp)) {
-        Text(
+    Column(modifier = Modifier.width(450.dp)) {
+        if (videoLinks.isNullOrEmpty()) Text(
             text = when {
                 videoLinks == null -> "Loading links"
                 videoLinks.isEmpty() -> "No links yet"
-                else -> "Links"
+                else -> return@Column
             },
             style = typography.headlineMedium,
-            color = textColor(),
+            color = subTextColor(),
         )
-        Spacer(Modifier.size(10.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(videoLinks ?: emptyList()) {
                 VideoLink(it, onClick = { onVideoLinkClick(it) })
