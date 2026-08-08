@@ -97,6 +97,8 @@ dependencies {
 
     implementation(libs.zxing.android.embedded)
 
+    implementation(libs.bundles.datastore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

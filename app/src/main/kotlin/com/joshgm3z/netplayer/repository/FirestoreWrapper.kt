@@ -2,6 +2,7 @@ package com.joshgm3z.netplayer.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.joshgm3z.netplayer.util.Logger
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirestoreWrapper
@@ -24,5 +25,15 @@ class FirestoreWrapper
                     }
                 }
             }
+    }
+
+    suspend fun newDocumentId(
+        collection: String,
+        dataMap: Map<String, Any>
+    ): String {
+        val document = db.collection(collection)
+            .add(dataMap)
+            .await()
+        return document.id
     }
 }

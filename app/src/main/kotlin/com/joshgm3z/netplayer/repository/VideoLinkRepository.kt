@@ -7,15 +7,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+const val COLLECTION_VIDEO_LINKS = "video_links"
+
 class VideoLinkRepository
 @Inject constructor(
     private val videoLinkDao: VideoLinkDao,
     private val firestore: FirestoreWrapper,
     private val scope: CoroutineScope
 ) {
+
     fun listenToNewVideoLinks(sessionId: String) {
         firestore.listenToDataMap(
-            "video_links",
+            COLLECTION_VIDEO_LINKS,
             sessionId
         ) {
             val url = it["url"] as String

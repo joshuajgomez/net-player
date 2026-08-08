@@ -63,7 +63,15 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "exoplayer" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "exoplayer" }
 
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version = "1.2.0" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version = "1.2.0" }
+
 [bundles]
+datastore = [
+    "androidx-datastore-core",
+    "androidx-datastore-preferences"
+]
+
 tv-compose = [
     #    "androidx-tv-foundation",
     "androidx-tv-material"
