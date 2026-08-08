@@ -1,23 +1,24 @@
 package com.joshgm3z.netplayer.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
@@ -70,9 +71,15 @@ fun AppUpdateDialogContent(
             )
         }
         if (uiState.enableButtons) Column {
+            val firstItemRequester = remember { FocusRequester() }
+            LaunchedEffect(Unit) {
+                firstItemRequester.requestFocus()
+            }
             Button(
                 onClick = onActionClick,
-                modifier = Modifier.width(200.dp)
+                modifier = Modifier
+                    .width(200.dp)
+                    .focusRequester(firstItemRequester)
             ) {
                 Text(
                     uiState.buttonAction.text,
@@ -91,7 +98,7 @@ fun AppUpdateDialogContent(
                     textAlign = TextAlign.Center
                 )
             }
-        } else CircularProgressIndicator()
+        } else CircularProgressIndicator(modifier = Modifier.padding(top = 20.dp))
     }
 }
 
