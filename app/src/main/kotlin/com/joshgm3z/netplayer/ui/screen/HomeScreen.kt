@@ -158,11 +158,11 @@ fun VideoLinks(
     Column(modifier = Modifier.width(450.dp)) {
         if (videoLinks.isNullOrEmpty()) Text(
             text = when {
-                videoLinks == null -> "Loading links"
-                videoLinks.isEmpty() -> "No links yet"
+                videoLinks == null -> "Loading..."
+                videoLinks.isEmpty() -> "Welcome to NetPlayer!"
                 else -> return@Column
             },
-            style = typography.headlineMedium,
+            style = typography.titleLarge,
             color = subTextColor(),
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
