@@ -19,17 +19,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
-
-val sampleUrl =
-    "https://rd2.seedr.cc/ff_get/3931638/5959460378/The.Drama.2026.1080p.WEBRip.AAC5.1.10bits.x265-Rapta.mkv?st=z3otH1pk1wu9ZgrqqX-GxQ&e=1786223834"
 
 @Composable
 fun PlayerScreen(
@@ -78,53 +73,13 @@ private fun PlaybackScreenContent(
 //    trackToLoadFlow: StateFlow<LoadTrack?> = MutableStateFlow(null),
 ) {
     val context = LocalContext.current
-
-    val userAgent =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-
-    // 2. Create a DataSource Factory with the User-Agent and common headers to avoid 403
-    val dataSourceFactory = remember {
-        androidx.media3.datasource.DefaultHttpDataSource.Factory()
-            .setUserAgent(userAgent)
-            .setAllowCrossProtocolRedirects(true)
-            .setDefaultRequestProperties(
-                mapOf(
-                    "Accept" to "*/*",
-                    "Connection" to "keep-alive",
-                    "Referer" to "https://www.seedr.cc/",
-                )
-            )
-    }
-
-    // 3. Create a MediaSource Factory using that DataSource
-    val mediaSourceFactory = remember {
-        androidx.media3.exoplayer.source.DefaultMediaSourceFactory(context)
-            .setDataSourceFactory(dataSourceFactory)
-    }
-
-    val renderersFactory = remember {
-        DefaultRenderersFactory(context).apply {
-            setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            setEnableDecoderFallback(true)
-        }
-    }
-
     val exoPlayer = remember {
-        ExoPlayer.Builder(context, renderersFactory)
-            .setMediaSourceFactory(mediaSourceFactory)
-            .build()
+        ExoPlayer.Builder(context).build()
     }
 
     LaunchedEffect(videoUrl) {
         val mediaItem = MediaItem.Builder()
             .setUri(videoUrl)
-            .setMimeType(
-                when {
-                    videoUrl.contains(".mkv") -> MimeTypes.VIDEO_MATROSKA
-                    videoUrl.contains(".mp4") -> MimeTypes.VIDEO_MP4
-                    else -> null
-                }
-            )
             .build()
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
