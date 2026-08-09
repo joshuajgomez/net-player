@@ -50,4 +50,12 @@ class FirestoreWrapper
             false
         }
     }
+
+    suspend fun activateSession(collection: String, sessionId: String) {
+        Logger.debug("collection = [${collection}], sessionId = [${sessionId}]")
+        db.collection(collection)
+            .document(sessionId)
+            .set(mapOf("activated" to System.currentTimeMillis()))
+            .await()
+    }
 }

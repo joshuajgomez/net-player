@@ -50,8 +50,7 @@ class HomeViewModel
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun onViewPaused() {
         viewModelScope.launch {
             videoLinkRepository.deleteSession(sessionId)
         }

@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
@@ -49,6 +51,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigate: (NavDest) -> Unit = {}
 ) {
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        viewModel.onViewPaused()
+    }
     val uiState by viewModel.uiState.collectAsState()
     HomeScreenContent(
         uiState = uiState,

@@ -31,12 +31,13 @@ class VideoLinkRepository
             else -> currentSessionId
         }
 
-    fun listenToNewVideoLinks(sessionId: String) {
+    suspend fun listenToNewVideoLinks(sessionId: String) {
+        firestore.activateSession(COLLECTION_VIDEO_LINKS, sessionId)
         firestore.listenToDataMap(
             COLLECTION_VIDEO_LINKS,
             sessionId
         ) { map ->
-            val url = map["url"] as String
+            val url = map["url"] as? String ?: return@listenToDataMap
             if (url.trim().isEmpty()) {
                 Logger.warn("Received invalid URL\"$url\" from Firestore, ignoring.")
                 return@listenToDataMap
@@ -75,6 +76,7 @@ class VideoLinkRepository
     }
 
     suspend fun deleteSession(sessionId: String) {
+        Logger.debug("sessionId = [${sessionId}]")
         firestore.deleteDocumentWithId(COLLECTION_VIDEO_LINKS, sessionId)
     }
 
