@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,38 +32,39 @@ import com.joshgm3z.netplayer.viewmodel.PlaybackViewModel
 
 @Composable
 fun PlayerScreen(
-    url: String,
-    title: String?,
     viewModel: PlaybackViewModel = hiltViewModel()
 ) {
-    PlaybackScreenContent(
-        videoUrl = url,
-        resumePosition = null/*uiState?.resumePosition*/,
-        updateLastPlayedPosition = {
-            viewModel.updatePlayedPosition(it)
-        },
-        onError = {
-            /*navController.navigate(
-                NavMainDestination.Error(
-                    message = "Error playing video",
-                    summary = it
-                )
-            )*/
-        },
-        updateTotalDuration = {
-            viewModel.updateTotalDuration(it)
-        },
-        onCaptionsClicked = {
-            /*trackViewModel.loadTracksOfType(TrackType.Subtitle)
-            navController.navigate(NavMainDestination.TrackSelector)*/
-        },
+    val uiState by viewModel.uiState.collectAsState()
+    uiState?.let { uiState ->
+        PlaybackScreenContent(
+            videoUrl = uiState.url,
+            resumePosition = uiState.resumePosition,
+            updateLastPlayedPosition = {
+                viewModel.updatePlayedPosition(it)
+            },
+            onError = {
+                /*navController.navigate(
+                    NavMainDestination.Error(
+                        message = "Error playing video",
+                        summary = it
+                    )
+                )*/
+            },
+            updateTotalDuration = {
+                viewModel.updateTotalDuration(it)
+            },
+            onCaptionsClicked = {
+                /*trackViewModel.loadTracksOfType(TrackType.Subtitle)
+                navController.navigate(NavMainDestination.TrackSelector)*/
+            },
 //            subtitleTrackListener = trackViewModel.subtitleTrackListener,
 //            trackToLoadFlow = trackViewModel.trackToLoad,
-        updateSelectedSubtitle = { language, title, url ->
+            updateSelectedSubtitle = { language, title, url ->
 //                viewModel.updateSelectedSubtitle(language, title, url)
-        }
-    )
+            }
+        )
 //    }
+    }
 }
 
 @OptIn(UnstableApi::class)

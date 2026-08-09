@@ -33,11 +33,7 @@ fun TvNavHost() {
             HomeScreen(navigate = { navController.navigate(it) })
         }
         composable<NavDest.Player> {
-            val playerRoute = it.toRoute<NavDest.Player>()
-            PlayerScreen(
-                url = playerRoute.url,
-                title = playerRoute.title
-            )
+            PlayerScreen()
         }
         composable<NavDest.AppUpdate> {
             AppUpdateDialog(onBackPress = { navController.popBackStack() })

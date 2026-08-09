@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,7 +68,8 @@ fun VideoLinkItem(
     ) {
         val (icon, title, url, metadata, progress) = createRefs()
         Icon(
-            imageVector = Icons.Default.Link,
+            imageVector = if (isFocused) Icons.Default.PlayArrow
+            else Icons.Default.Link,
             tint = colorScheme.primary,
             contentDescription = null,
             modifier = Modifier
@@ -76,7 +78,8 @@ fun VideoLinkItem(
                     start.linkTo(parent.start)
                 }
                 .background(
-                    color = colorScheme.primaryContainer,
+                    color = if (isFocused) colorScheme.primaryContainer
+                    else colorScheme.onBackground.copy(alpha = 0.2f),
                     shape = CircleShape
                 )
                 .padding(5.dp)
