@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.tv.material3.Text
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -90,37 +92,56 @@ private fun HomeScreenContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             VideoLinks(uiState.videoLinks, onVideoLinkClick)
-            QrCode(uiState.qrCode)
+            Settings(
+                qrCode = uiState.qrCode,
+                onAppUpdateClick = onAppUpdateClick,
+                onDeleteAllClick = onDeleteAllClick
+            )
         }
-        Settings(
-            onAppUpdateClick = onAppUpdateClick,
-            onDeleteAllClick = onDeleteAllClick
-        )
     }
 }
 
 @Composable
 fun Settings(
+    qrCode: Bitmap?,
     onAppUpdateClick: () -> Unit,
     onDeleteAllClick: () -> Unit
 ) {
-    Row {
-        Button(onClick = onDeleteAllClick) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = null
-            )
-            Spacer(Modifier.size(5.dp))
-            Text("Delete all")
-        }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        QrCode(qrCode)
+        Spacer(Modifier.size(20.dp))
+        CustomButton(
+            text = "Delete all",
+            imageVector = Icons.Default.Delete,
+            onClick = onDeleteAllClick
+        )
         Spacer(Modifier.size(10.dp))
-        Button(onClick = onAppUpdateClick) {
+        CustomButton(
+            text = "Update App",
+            imageVector = Icons.Default.Replay,
+            onClick = onAppUpdateClick
+        )
+    }
+}
+
+@Composable
+fun CustomButton(
+    text: String,
+    imageVector: ImageVector,
+    onClick: () -> Unit
+) {
+    Button(onClick = onClick, modifier = Modifier.width(200.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Icon(
-                imageVector = Icons.Default.Replay,
+                imageVector = imageVector,
                 contentDescription = null
             )
             Spacer(Modifier.size(5.dp))
-            Text("Update App")
+            Text(text)
         }
     }
 }
