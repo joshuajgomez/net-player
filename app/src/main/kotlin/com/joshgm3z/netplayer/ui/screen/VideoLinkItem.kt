@@ -138,7 +138,7 @@ fun VideoLinkItem(
             progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
             modifier = Modifier
                 .constrainAs(progress) {
-                    top.linkTo(metadata.top)
+                    top.linkTo(metadata.top, margin = 3.dp)
                     bottom.linkTo(metadata.bottom)
                     start.linkTo(metadata.end, margin = 12.dp)
                 }

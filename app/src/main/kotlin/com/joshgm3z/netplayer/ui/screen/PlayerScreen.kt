@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
@@ -25,17 +26,19 @@ import androidx.media3.ui.PlayerView
 import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
+import com.joshgm3z.netplayer.viewmodel.PlaybackViewModel
 
 @Composable
 fun PlayerScreen(
     url: String,
     title: String?,
+    viewModel: PlaybackViewModel = hiltViewModel()
 ) {
     PlaybackScreenContent(
         videoUrl = url,
         resumePosition = null/*uiState?.resumePosition*/,
         updateLastPlayedPosition = {
-//                viewModel.updateLastPlayedPosition(it)
+            viewModel.updatePlayedPosition(it)
         },
         onError = {
             /*navController.navigate(
@@ -45,7 +48,9 @@ fun PlayerScreen(
                 )
             )*/
         },
-        onBackPress = {},
+        updateTotalDuration = {
+            viewModel.updateTotalDuration(it)
+        },
         onCaptionsClicked = {
             /*trackViewModel.loadTracksOfType(TrackType.Subtitle)
             navController.navigate(NavMainDestination.TrackSelector)*/
@@ -65,16 +70,24 @@ private fun PlaybackScreenContent(
     videoUrl: String,
     resumePosition: Long? = null,
     updateLastPlayedPosition: (Long) -> Unit = {},
+    updateTotalDuration: (Long) -> Unit = {},
     onError: (String) -> Unit = {},
     onCaptionsClicked: () -> Unit = {},
-    onBackPress: () -> Unit = {},
     updateSelectedSubtitle: (language: String, title: String, url: String?) -> Unit = { _, _, _ -> },
 //    subtitleTrackListener: Player.Listener? = null,
 //    trackToLoadFlow: StateFlow<LoadTrack?> = MutableStateFlow(null),
 ) {
     val context = LocalContext.current
     val exoPlayer = remember {
-        ExoPlayer.Builder(context).build()
+        ExoPlayer.Builder(context).build().apply {
+            addListener(object : androidx.media3.common.Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == androidx.media3.common.Player.STATE_READY) {
+                        updateTotalDuration(duration.coerceAtLeast(0L))
+                    }
+                }
+            })
+        }
     }
 
     LaunchedEffect(videoUrl) {

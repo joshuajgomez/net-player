@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VideoLinkDao {
 
+    @Query("SELECT * FROM VideoLink WHERE url = :url")
+    suspend fun get(url: String): VideoLink
+
     @Query("SELECT * FROM VideoLink")
     fun getAllFlow(): Flow<List<VideoLink>>
 

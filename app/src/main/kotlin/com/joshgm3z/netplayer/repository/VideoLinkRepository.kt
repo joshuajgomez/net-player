@@ -77,6 +77,11 @@ class VideoLinkRepository
     suspend fun deleteSession(sessionId: String) {
         firestore.deleteDocumentWithId(COLLECTION_VIDEO_LINKS, sessionId)
     }
+
+    suspend fun getVideoLink(url: String): VideoLink {
+        return videoLinkDao.get(url)
+    }
+
 }
 
 fun String.tryToGetTitle(): String = try {
