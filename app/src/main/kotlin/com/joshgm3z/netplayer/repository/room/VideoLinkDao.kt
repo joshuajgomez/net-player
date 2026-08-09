@@ -15,7 +15,7 @@ interface VideoLinkDao {
     @Query("SELECT * FROM VideoLink WHERE url = :url")
     suspend fun get(url: String): VideoLink
 
-    @Query("SELECT * FROM VideoLink")
+    @Query("SELECT * FROM VideoLink ORDER BY added DESC")
     fun getAllFlow(): Flow<List<VideoLink>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
