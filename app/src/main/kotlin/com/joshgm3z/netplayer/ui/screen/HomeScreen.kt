@@ -51,6 +51,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigate: (NavDest) -> Unit = {}
 ) {
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.onViewResumed()
+    }
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
         viewModel.onViewPaused()
     }

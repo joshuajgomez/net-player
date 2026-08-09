@@ -32,7 +32,7 @@ class HomeViewModel
 
     private lateinit var sessionId: String
 
-    init {
+    fun onViewResumed() {
         viewModelScope.launch {
             sessionId = videoLinkRepository.getSessionId()
             videoLinkRepository.listenToNewVideoLinks(sessionId)
