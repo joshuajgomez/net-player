@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "NetPlayer"
 include(":app")
- 
+include(":subtitletrack")

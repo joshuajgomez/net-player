@@ -128,7 +128,7 @@ fun Settings(
 @Composable
 fun CustomButton(
     text: String,
-    imageVector: ImageVector,
+    imageVector: ImageVector? = null,
     onClick: () -> Unit
 ) {
     Button(onClick = onClick, modifier = Modifier.width(200.dp)) {
@@ -137,11 +137,13 @@ fun CustomButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                imageVector = imageVector,
-                contentDescription = null
-            )
-            Spacer(Modifier.size(5.dp))
+            imageVector?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = null
+                )
+                Spacer(Modifier.size(5.dp))
+            }
             Text(text)
         }
     }

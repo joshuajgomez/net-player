@@ -1,10 +1,11 @@
 package com.joshgm3z.netplayer.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joshgm3z.netplayer.repository.VideoLinkRepository
+import com.joshgm3z.subtitletrack.PlayerListener
+import com.joshgm3z.subtitletrack.view.LoadTrack
 import javax.inject.Inject
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ data class PlaybackUiState(
     val resumePosition: Long? = null,
     val title: String,
     val url: String,
+    val trackToLoad: LoadTrack? = null,
 )
 
 @HiltViewModel
@@ -23,7 +25,8 @@ class PlaybackViewModel
 @Inject
 constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: VideoLinkRepository
+    val playerListener: PlayerListener,
+    private val repository: VideoLinkRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<PlaybackUiState?>(null)
@@ -40,6 +43,11 @@ constructor(
                 title = videoLink.title,
                 url = videoLink.url
             )
+        }
+        viewModelScope.launch {
+            playerListener.trackToLoad.collect {
+                _uiState.value = _uiState.value?.copy(trackToLoad = it)
+            }
         }
     }
 

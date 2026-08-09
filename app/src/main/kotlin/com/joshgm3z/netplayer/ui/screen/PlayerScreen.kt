@@ -22,84 +22,84 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
+import com.joshgm3z.netplayer.ui.util.errorListener
+import com.joshgm3z.netplayer.viewmodel.PlaybackUiState
 import com.joshgm3z.netplayer.viewmodel.PlaybackViewModel
+import com.joshgm3z.subtitletrack.util.loadSubtitle
+import com.joshgm3z.subtitletrack.util.switchTrack
+import com.joshgm3z.subtitletrack.view.LoadTrack
+import com.joshgm3z.subtitletrack.view.TrackType
 
 @Composable
 fun PlayerScreen(
-    viewModel: PlaybackViewModel = hiltViewModel()
+    viewModel: PlaybackViewModel = hiltViewModel(),
+    onCaptionsClicked: (String) -> Unit,
+    onError: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     uiState?.let { uiState ->
         PlaybackScreenContent(
-            videoUrl = uiState.url,
-            resumePosition = uiState.resumePosition,
+            uiState = uiState,
             updateLastPlayedPosition = {
                 viewModel.updatePlayedPosition(it)
             },
-            onError = {
-                /*navController.navigate(
-                    NavMainDestination.Error(
-                        message = "Error playing video",
-                        summary = it
-                    )
-                )*/
-            },
+            onError = onError,
             updateTotalDuration = {
                 viewModel.updateTotalDuration(it)
             },
-            onCaptionsClicked = {
-                /*trackViewModel.loadTracksOfType(TrackType.Subtitle)
-                navController.navigate(NavMainDestination.TrackSelector)*/
+            onCaptionsClicked = { onCaptionsClicked(uiState.title) },
+            onTracksChanged = {
+                viewModel.playerListener.trackChangesFlow.value = it
             },
-//            subtitleTrackListener = trackViewModel.subtitleTrackListener,
-//            trackToLoadFlow = trackViewModel.trackToLoad,
-            updateSelectedSubtitle = { language, title, url ->
-//                viewModel.updateSelectedSubtitle(language, title, url)
-            }
         )
-//    }
     }
 }
 
 @OptIn(UnstableApi::class)
 @Composable
 private fun PlaybackScreenContent(
-    videoUrl: String,
-    resumePosition: Long? = null,
+    uiState: PlaybackUiState,
     updateLastPlayedPosition: (Long) -> Unit = {},
     updateTotalDuration: (Long) -> Unit = {},
     onError: (String) -> Unit = {},
     onCaptionsClicked: () -> Unit = {},
+    onTracksChanged: (Tracks) -> Unit = {},
     updateSelectedSubtitle: (language: String, title: String, url: String?) -> Unit = { _, _, _ -> },
-//    subtitleTrackListener: Player.Listener? = null,
-//    trackToLoadFlow: StateFlow<LoadTrack?> = MutableStateFlow(null),
 ) {
     val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            addListener(object : androidx.media3.common.Player.Listener {
+            addListener(errorListener(onError = onError))
+            addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(playbackState: Int) {
-                    if (playbackState == androidx.media3.common.Player.STATE_READY) {
+                    if (playbackState == Player.STATE_READY) {
                         updateTotalDuration(duration.coerceAtLeast(0L))
                     }
+                }
+
+                override fun onTracksChanged(tracks: Tracks) {
+                    super.onTracksChanged(tracks)
+                    onTracksChanged(tracks)
                 }
             })
         }
     }
 
-    LaunchedEffect(videoUrl) {
+    LaunchedEffect(uiState.url) {
         val mediaItem = MediaItem.Builder()
-            .setUri(videoUrl)
+            .setUri(uiState.url)
             .build()
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
-        resumePosition?.let { exoPlayer.seekTo(it) }
+        uiState.resumePosition?.let { exoPlayer.seekTo(it) }
         exoPlayer.playWhenReady = true
     }
 
@@ -120,14 +120,9 @@ private fun PlaybackScreenContent(
             playerView.apply {
                 player = exoPlayer
                 keepScreenOn = true
-//                subtitleTrackListener?.let { player?.addListener(it) }
-//                setShowSubtitleButton(true)
                 findViewById<ImageButton>(R.id.custom_exo_subtitle)?.let {
                     it.setOnClickListener { onCaptionsClicked() }
                 }
-                /*findViewById<ImageButton>(R.id.iv_back_button)?.let {
-                    it.setOnClickListener { onBackPress() }
-                }*/
             }
         },
         modifier = Modifier
@@ -136,14 +131,11 @@ private fun PlaybackScreenContent(
     )
 
     LaunchedEffect(Unit) {
-        /*remindPeriodically {
-            if (exoPlayer.isPlaying)
-                updateLastPlayedPosition(exoPlayer.currentPosition)
-        }*/
+        if (exoPlayer.isPlaying)
+            updateLastPlayedPosition(exoPlayer.currentPosition)
     }
 
-    /*val trackToLoad by trackToLoadFlow.collectAsState()
-    trackToLoad?.let {
+    uiState.trackToLoad?.let {
         when (it) {
             is LoadTrack.OnlineSubtitle -> with(it.subtitleData) {
                 exoPlayer.loadSubtitle(this)
@@ -159,7 +151,7 @@ private fun PlaybackScreenContent(
                 )
             }
         }
-    }*/
+    }
 }
 
 fun Context.findActivity(): Activity? = when (this) {
@@ -172,6 +164,11 @@ fun Context.findActivity(): Activity? = when (this) {
 @Composable
 private fun PreviewPlaybackScreenContent() {
     DarkSurface {
-        PlaybackScreenContent("")
+        PlaybackScreenContent(
+            uiState = PlaybackUiState(
+                title = "Sample Video",
+                url = "https://example.com/video.mp4"
+            ),
+        )
     }
 }

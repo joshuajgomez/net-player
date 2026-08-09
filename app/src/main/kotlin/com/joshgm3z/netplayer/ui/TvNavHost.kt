@@ -7,8 +7,10 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.joshgm3z.netplayer.ui.screen.AppUpdateDialog
+import com.joshgm3z.netplayer.ui.screen.ErrorDialog
 import com.joshgm3z.netplayer.ui.screen.HomeScreen
 import com.joshgm3z.netplayer.ui.screen.PlayerScreen
+import com.joshgm3z.subtitletrack.view.TrackSelectorDialog
 import kotlinx.serialization.Serializable
 
 open class NavDest {
@@ -20,6 +22,12 @@ open class NavDest {
 
     @Serializable
     object AppUpdate : NavDest()
+
+    @Serializable
+    class SubtitleTrackSelector(val title: String) : NavDest()
+
+    @Serializable
+    class Error(val summary: String) : NavDest()
 }
 
 @Composable
@@ -33,10 +41,27 @@ fun TvNavHost() {
             HomeScreen(navigate = { navController.navigate(it) })
         }
         composable<NavDest.Player> {
-            PlayerScreen()
+            PlayerScreen(
+                onCaptionsClicked = {
+                    navController.navigate(NavDest.SubtitleTrackSelector(it))
+                },
+                onError = {
+                    navController.navigate(NavDest.Error(it))
+                })
         }
         composable<NavDest.AppUpdate> {
             AppUpdateDialog(onBackPress = { navController.popBackStack() })
+        }
+        dialog<NavDest.SubtitleTrackSelector> {
+            TrackSelectorDialog(goBack = { navController.popBackStack() })
+        }
+        dialog<NavDest.Error> {
+            val route = it.toRoute<NavDest.Error>()
+            ErrorDialog(
+                summary = route.summary,
+                message = "Error playing video",
+                onDismissClick = { navController.popBackStack() }
+            )
         }
     }
 }
