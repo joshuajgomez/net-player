@@ -35,6 +35,7 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
+import androidx.tv.material3.Surface
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
 import com.joshgm3z.netplayer.ui.theme.subTextColor
@@ -133,12 +134,13 @@ fun QrCode(qrCode: Bitmap?) {
             }
         }
         Text(
-            text = "Scan the QR code to add new urls here",
+            text = "Scan the QR code to add new urls",
             color = subTextColor(),
+            style = typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(20.dp)
-                .width(200.dp)
+                .width(180.dp)
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,7 +62,7 @@ fun VideoLinkItem(
                 onClick = onClick
             )
             .background(color = cardColor())
-            .padding(horizontal = 15.dp, vertical = 15.dp)
+            .padding(horizontal = 15.dp, vertical = 10.dp)
             .width(450.dp),
     ) {
         val (icon, title, url, metadata, progress) = createRefs()
@@ -79,6 +80,7 @@ fun VideoLinkItem(
                     shape = CircleShape
                 )
                 .padding(5.dp)
+                .size(20.dp)
         )
 
         if (!videoLink.title.isEmpty()) Text(
