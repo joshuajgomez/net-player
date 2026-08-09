@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -154,6 +155,11 @@ fun QrCode(qrCode: Bitmap?) {
                 .size(200.dp)
                 .background(color = colorScheme.primary)
         ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                color = colorScheme.onPrimary
+            )
             qrCode?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
