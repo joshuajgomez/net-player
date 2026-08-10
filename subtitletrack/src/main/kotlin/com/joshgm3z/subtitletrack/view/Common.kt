@@ -81,7 +81,7 @@ fun CustomCard(
                 color = if (!isFocused) colorScheme.onBackground.copy(alpha = 0.05f)
                 else colorScheme.primaryContainer.copy(alpha = 0.3f)
             )
-            .width(450.dp)
+            .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 15.dp),
     ) {
         content()
