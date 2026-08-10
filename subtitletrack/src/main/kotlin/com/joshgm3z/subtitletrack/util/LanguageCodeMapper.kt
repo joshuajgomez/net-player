@@ -62,6 +62,7 @@ fun String?.languageName(): String {
         "sq" -> "Albanian"
         "ku" -> "Kurdish"
         "sd" -> "Sindhi"
+        "mn" -> "Mongolian"
         else -> this
     }
 }

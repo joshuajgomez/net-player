@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -60,29 +61,33 @@ annotation class DarkPreview
 @Composable
 fun CustomCard(
     onClick: () -> Unit,
-    content: @Composable RowScope. () -> Unit
+    radius: Dp = 10.dp,
+    border: Dp = 2.dp,
+    selected: Boolean = false,
+    paddingValues: PaddingValues = PaddingValues(vertical = 10.dp, horizontal = 15.dp),
+    content: @Composable RowScope. () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(radius))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
             )
             .border(
-                width = 2.dp,
+                width = border,
                 color = if (isFocused) colorScheme.primary else Color.Transparent,
                 shape = RoundedCornerShape(10.dp)
             )
             .background(
-                color = if (!isFocused) colorScheme.onBackground.copy(alpha = 0.05f)
-                else colorScheme.primaryContainer.copy(alpha = 0.3f)
+                color = if (isFocused || selected) colorScheme.primaryContainer.copy(alpha = 0.3f)
+                else colorScheme.onBackground.copy(alpha = 0.05f)
             )
             .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 15.dp),
+            .padding(paddingValues),
     ) {
         content()
     }

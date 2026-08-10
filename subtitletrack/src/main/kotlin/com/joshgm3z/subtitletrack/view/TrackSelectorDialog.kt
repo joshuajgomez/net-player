@@ -70,12 +70,13 @@ private fun TrackSelectorDialogContent(
     onTrackClicked: (TrackInfo) -> Unit = {},
     onLanguageClick: (String) -> Unit = {},
 ) {
+    val sidePadding = 15.dp
     Box(
         modifier = Modifier
             .width(600.dp)
             .height(300.dp)
-            .background(color = Gray10)
-            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),
+            .background(color = colorScheme.background)
+            .padding(start = sidePadding, end = sidePadding, top = 5.dp, bottom = sidePadding),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(

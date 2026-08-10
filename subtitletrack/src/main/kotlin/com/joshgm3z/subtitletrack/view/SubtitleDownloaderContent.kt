@@ -40,28 +40,14 @@ fun SubtitleDownloaderContent(
     Column {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             items(listState.languages) {
-                val chipShape = RoundedCornerShape(5.dp)
                 val selected = listState.selectedLanguage == it
-                Text(
-                    text = it.languageName(),
-                    color = colorScheme.onBackground.copy(alpha = 0.5f),
-                    style = typography.labelLarge,
-                    modifier = Modifier
-                        .clip(chipShape)
-                        .clickable(!selected) {
-                            onLanguageClick(it)
-                        }
-                        .background(
-                            color = if (selected) colorScheme.onPrimary
-                            else colorScheme.onBackground.copy(alpha = 0.1f)
-                        )
-                        .border(
-                            width = if (selected) 1.dp else 0.dp,
-                            color = if (selected) colorScheme.primary else Color.Transparent,
-                            shape = chipShape
-                        )
-                        .padding(horizontal = 8.dp, vertical = 5.dp)
-                )
+                CustomCard(onClick = { onLanguageClick(it) }) {
+                    Text(
+                        text = it.languageName(),
+                        color = colorScheme.onBackground.copy(alpha = 0.5f),
+                        style = typography.labelLarge,
+                    )
+                }
             }
         }
         Spacer(Modifier.size(15.dp))
