@@ -80,10 +80,10 @@ constructor(
         }
     }
 
-    private fun updateSelectedSubtitle(url: String, language: String) {
+    private fun updateSelectedSubtitle(subtitleUrl: String, language: String) {
         viewModelScope.launch {
             val videoLink = repository.getVideoLink(url)
-            repository.update(videoLink.copy(subtitleUrl = url, subtitleLanguage = language))
+            repository.update(videoLink.copy(subtitleUrl = subtitleUrl, subtitleLanguage = language))
         }
     }
 }
