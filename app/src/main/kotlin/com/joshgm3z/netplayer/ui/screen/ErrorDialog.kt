@@ -15,10 +15,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.Text
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
-import com.joshgm3z.subtitletrack.view.theme.cardColor
 import com.joshgm3z.subtitletrack.view.theme.subTextColor
 import com.joshgm3z.subtitletrack.view.theme.textColor
 
@@ -31,13 +31,14 @@ fun ErrorDialog(
     Dialog(onDismissRequest = {}) {
         Column(
             modifier = Modifier
-                .background(color = cardColor())
+                .background(color = colorScheme.background)
                 .padding(15.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = Icons.Default.Error,
-                contentDescription = null
+                contentDescription = null,
+                tint = colorScheme.error
             )
             Spacer(Modifier.size(15.dp))
             Text(

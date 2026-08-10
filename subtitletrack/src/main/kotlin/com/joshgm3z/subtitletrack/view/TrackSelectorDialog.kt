@@ -71,8 +71,9 @@ private fun TrackSelectorDialogContent(
     Box(
         modifier = Modifier
             .width(600.dp)
-            .height(300.dp),
-        contentAlignment = Alignment.BottomCenter
+            .height(300.dp)
+            .background(color = colorScheme.background),
+        contentAlignment = Alignment.BottomCenter,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
