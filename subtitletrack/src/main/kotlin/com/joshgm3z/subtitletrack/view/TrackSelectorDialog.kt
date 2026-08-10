@@ -37,6 +37,8 @@ import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
 import com.joshgm3z.subtitletrack.repository.SubtitleData
+import com.joshgm3z.subtitletrack.view.theme.Gray10
+import com.joshgm3z.subtitletrack.view.theme.Purple40
 import com.joshgm3z.subtitletrack.view.theme.SubtitleTrackTheme
 
 @Composable
@@ -72,7 +74,8 @@ private fun TrackSelectorDialogContent(
         modifier = Modifier
             .width(600.dp)
             .height(300.dp)
-            .background(color = colorScheme.background),
+            .background(color = Gray10)
+            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(
@@ -128,8 +131,7 @@ private fun TopRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(55.dp)
-            .padding(horizontal = 15.dp),
+            .height(55.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

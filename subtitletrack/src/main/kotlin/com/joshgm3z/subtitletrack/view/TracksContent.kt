@@ -1,5 +1,6 @@
 package com.joshgm3z.subtitletrack.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.Icon
@@ -70,9 +72,6 @@ private fun TracksContent(
         color = colorScheme.onBackground,
         modifier = Modifier.padding(top = 30.dp)
     ) else LazyColumn(
-        modifier = Modifier
-            .padding(horizontal = 10.dp)
-            .clip(RoundedCornerShape(10.dp)),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(list) {
@@ -85,7 +84,6 @@ private fun TracksContent(
                 }
             )
         }
-        listSpacing(20.dp)
     }
 }
 
@@ -112,6 +110,7 @@ private fun TrackItem(
             Text(
                 text = if (trackInfo.disableTrack) "Disabled"
                 else trackInfo.language.languageName(),
+                color = colorScheme.onBackground.copy(alpha = 0.9f),
             )
             if (!trackInfo.disableTrack) Text(
                 text = trackInfo.label ?: "Unknown",
@@ -123,30 +122,7 @@ private fun TrackItem(
     }
 }
 
-@Composable
-fun CustomCard(
-    onClick: () -> Unit,
-    content: @Composable RowScope. () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.colors(
-            containerColor = colorScheme.onBackground.copy(alpha = 0.1f),
-            contentColor = colorScheme.onBackground
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 10.dp)
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) { content() }
-    }
-}
-
-@Preview
+@DarkPreview
 @Composable
 private fun PreviewTracksContent() {
     DarkSurface {

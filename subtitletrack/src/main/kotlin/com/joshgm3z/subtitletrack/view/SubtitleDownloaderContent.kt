@@ -39,13 +39,12 @@ fun SubtitleDownloaderContent(
 ) {
     Column {
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            listSpacing(10.dp)
             items(listState.languages) {
                 val chipShape = RoundedCornerShape(5.dp)
                 val selected = listState.selectedLanguage == it
                 Text(
                     text = it.languageName(),
-                    color = colorScheme.onBackground,
+                    color = colorScheme.onBackground.copy(alpha = 0.5f),
                     style = typography.labelLarge,
                     modifier = Modifier
                         .clip(chipShape)
@@ -64,13 +63,9 @@ fun SubtitleDownloaderContent(
                         .padding(horizontal = 8.dp, vertical = 5.dp)
                 )
             }
-            listSpacing(10.dp)
         }
         Spacer(Modifier.size(15.dp))
         LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .clip(RoundedCornerShape(10.dp)),
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             items(listState.list) {
@@ -78,7 +73,6 @@ fun SubtitleDownloaderContent(
                     onClick(it)
                 }
             }
-            listSpacing(20.dp)
         }
     }
 }
@@ -115,7 +109,7 @@ private fun SubtitleResultItem(
                 text = subtitleData.title,
                 maxLines = 1,
                 style = typography.bodyMedium,
-                color = colorScheme.onBackground,
+                color = colorScheme.onBackground.copy(alpha = 0.8f),
                 modifier = Modifier.constrainAs(titleRef) {
                     top.linkTo(parent.top)
                     start.linkTo(iconRef.end, margin = 15.dp)
@@ -132,7 +126,7 @@ private fun SubtitleResultItem(
                         start.linkTo(titleRef.start)
                     }
                     .background(
-                        color = colorScheme.primaryContainer,
+                        color = colorScheme.primaryContainer.copy(alpha = 0.4f),
                         shape = RoundedCornerShape(5.dp)
                     )
                     .padding(horizontal = 5.dp, vertical = 1.dp)
