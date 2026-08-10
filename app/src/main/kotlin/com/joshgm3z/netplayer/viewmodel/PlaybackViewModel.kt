@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joshgm3z.netplayer.repository.VideoLinkRepository
 import com.joshgm3z.subtitletrack.PlayerListener
+import com.joshgm3z.subtitletrack.repository.SubtitleData
 import com.joshgm3z.subtitletrack.view.LoadTrack
 import javax.inject.Inject
 
@@ -41,12 +42,26 @@ constructor(
             _uiState.value = PlaybackUiState(
                 resumePosition = videoLink.playedDuration,
                 title = videoLink.title,
-                url = videoLink.url
+                url = videoLink.url,
+                trackToLoad = videoLink.subtitleUrl?.let { subtitleUrl ->
+                    LoadTrack.OnlineSubtitle(
+                        subtitleData = SubtitleData(
+                            title = videoLink.title,
+                            language = videoLink.subtitleLanguage,
+                            url = subtitleUrl
+                        )
+                    )
+                }
             )
         }
         viewModelScope.launch {
             playerListener.trackToLoad.collect {
                 _uiState.value = _uiState.value?.copy(trackToLoad = it)
+                if (it is LoadTrack.OnlineSubtitle)
+                    updateSelectedSubtitle(
+                        it.subtitleData.url!!,
+                        it.subtitleData.language!!
+                    )
             }
         }
     }
@@ -65,10 +80,10 @@ constructor(
         }
     }
 
-    fun updateSelectedSubtitle(url: String) {
+    private fun updateSelectedSubtitle(url: String, language: String) {
         viewModelScope.launch {
             val videoLink = repository.getVideoLink(url)
-            repository.update(videoLink.copy(subtitleUrl = url))
+            repository.update(videoLink.copy(subtitleUrl = url, subtitleLanguage = language))
         }
     }
 }

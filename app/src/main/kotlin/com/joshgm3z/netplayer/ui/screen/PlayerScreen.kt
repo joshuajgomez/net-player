@@ -59,9 +59,6 @@ fun PlayerScreen(
             onTracksChanged = {
                 viewModel.playerListener.trackChangesFlow.value = it
             },
-            updateSelectedSubtitle = {
-                viewModel.updateSelectedSubtitle(it)
-            }
         )
     }
 }
@@ -75,7 +72,6 @@ private fun PlaybackScreenContent(
     onError: (String) -> Unit = {},
     onCaptionsClicked: () -> Unit = {},
     onTracksChanged: (Tracks) -> Unit = {},
-    updateSelectedSubtitle: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
     val exoPlayer = remember {
@@ -142,9 +138,6 @@ private fun PlaybackScreenContent(
         when (it) {
             is LoadTrack.OnlineSubtitle -> with(it.subtitleData) {
                 exoPlayer.loadSubtitle(this)
-                url?.let { url ->
-                    updateSelectedSubtitle(url)
-                }
             }
 
             is LoadTrack.OfflineTrack -> with(it.trackInfo) {

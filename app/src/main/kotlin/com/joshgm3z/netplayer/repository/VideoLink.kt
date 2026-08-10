@@ -12,4 +12,5 @@ data class VideoLink(
     val totalDuration: Long = 0,
     val playedDuration: Long = 0,
     val subtitleUrl: String? = null,
+    val subtitleLanguage: String? = null,
 )
