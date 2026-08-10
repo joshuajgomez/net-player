@@ -1,23 +1,16 @@
 package com.joshgm3z.subtitletrack.view
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,20 +19,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.Border
-import androidx.tv.material3.Card
-import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.RadioButton
 import androidx.tv.material3.RadioButtonDefaults
 import androidx.tv.material3.Text
 import com.joshgm3z.subtitletrack.util.languageName
-import com.joshgm3z.subtitletrack.view.theme.SubtitleTrackTheme
 
 @Composable
 fun AudioTracks(
@@ -100,7 +87,7 @@ private fun TrackItem(
             onClick = {},
             colors = RadioButtonDefaults.colors(
                 selectedColor = colorScheme.primary,
-                unselectedColor = colorScheme.onBackground.copy(alpha = 0.4f)
+                unselectedColor = colorScheme.onBackground.copy(alpha = 0.3f)
             ),
         )
         Spacer(Modifier.size(10.dp))
@@ -114,13 +101,25 @@ private fun TrackItem(
                 overflow = TextOverflow.Ellipsis,
                 color = colorScheme.onBackground.copy(alpha = 0.9f),
             )
-            if (!trackInfo.disableTrack) Text(
-                text = trackInfo.label ?: "Unknown",
-                color = colorScheme.onBackground.copy(alpha = 0.5f),
-                overflow = TextOverflow.Ellipsis,
-                style = typography.bodyMedium,
-                maxLines = 1
-            )
+            if (!trackInfo.disableTrack) Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                if (trackInfo.id.contains("online")) Icon(
+                    imageVector = Icons.Default.Cloud,
+                    contentDescription = null,
+                    tint = colorScheme.onBackground.copy(alpha = 0.4f),
+                    modifier = Modifier.size(14.dp)
+                )
+                Text(
+                    text = trackInfo.label ?: "Unknown",
+                    color = colorScheme.onBackground.copy(alpha = 0.4f),
+                    overflow = TextOverflow.Ellipsis,
+                    style = typography.bodyMedium,
+                    maxLines = 1
+                )
+            }
         }
     }
 }
