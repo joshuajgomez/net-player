@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Border
@@ -110,11 +111,13 @@ private fun TrackItem(
             Text(
                 text = if (trackInfo.disableTrack) "Disabled"
                 else trackInfo.language.languageName(),
+                overflow = TextOverflow.Ellipsis,
                 color = colorScheme.onBackground.copy(alpha = 0.9f),
             )
             if (!trackInfo.disableTrack) Text(
                 text = trackInfo.label ?: "Unknown",
                 color = colorScheme.onBackground.copy(alpha = 0.5f),
+                overflow = TextOverflow.Ellipsis,
                 style = typography.bodyMedium,
                 maxLines = 1
             )

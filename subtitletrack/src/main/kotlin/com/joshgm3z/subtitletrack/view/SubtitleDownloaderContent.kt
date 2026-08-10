@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.tv.material3.Icon
@@ -41,7 +42,10 @@ fun SubtitleDownloaderContent(
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             items(listState.languages) {
                 val selected = listState.selectedLanguage == it
-                CustomCard(onClick = { onLanguageClick(it) }) {
+                CustomCard(
+                    onClick = { onLanguageClick(it) },
+                    selected = selected
+                ) {
                     Text(
                         text = it.languageName(),
                         color = colorScheme.onBackground.copy(alpha = 0.5f),
@@ -95,6 +99,7 @@ private fun SubtitleResultItem(
                 text = subtitleData.title,
                 maxLines = 1,
                 style = typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
                 color = colorScheme.onBackground.copy(alpha = 0.8f),
                 modifier = Modifier.constrainAs(titleRef) {
                     top.linkTo(parent.top)

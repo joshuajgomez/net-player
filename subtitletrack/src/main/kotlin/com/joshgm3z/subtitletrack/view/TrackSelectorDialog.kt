@@ -73,14 +73,15 @@ private fun TrackSelectorDialogContent(
     val sidePadding = 15.dp
     Box(
         modifier = Modifier
-            .width(600.dp)
-            .height(300.dp)
-            .background(color = colorScheme.background)
-            .padding(start = sidePadding, end = sidePadding, top = 5.dp, bottom = sidePadding),
+            .width(650.dp)
+            .height(350.dp)
+            .background(color = colorScheme.background),
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = sidePadding, end = sidePadding, top = 5.dp, bottom = sidePadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopRow(
