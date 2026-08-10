@@ -64,4 +64,11 @@ constructor(
             repository.update(videoLink.copy(totalDuration = durationMs))
         }
     }
+
+    fun updateSelectedSubtitle(url: String) {
+        viewModelScope.launch {
+            val videoLink = repository.getVideoLink(url)
+            repository.update(videoLink.copy(subtitleUrl = url))
+        }
+    }
 }

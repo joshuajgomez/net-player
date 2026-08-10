@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ClosedCaption
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.LinearProgressIndicator
@@ -58,15 +59,18 @@ fun VideoLinkItem(
                 shape = RoundedCornerShape(10.dp)
             )
             .clickable(
-                interactionSource = interactionSource, // 3. Pass interaction source here
-                indication = null, // Optional: remove default ripple if it interferes
+                interactionSource = interactionSource,
+                indication = null,
                 onClick = onClick
             )
-            .background(color = cardColor())
+            .background(
+                color = if (!isFocused) cardColor()
+                else colorScheme.primaryContainer.copy(alpha = 0.3f)
+            )
             .padding(horizontal = 15.dp, vertical = 10.dp)
             .width(450.dp),
     ) {
-        val (icon, title, url, metadata, progress) = createRefs()
+        val (icon, title, url, metadata, progress, cc) = createRefs()
         Icon(
             imageVector = if (isFocused) Icons.Default.PlayArrow
             else Icons.Default.Link,
@@ -84,6 +88,19 @@ fun VideoLinkItem(
                 )
                 .padding(5.dp)
                 .size(20.dp)
+        )
+
+        if (videoLink.playedDuration > 0) LinearProgressIndicator(
+            progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
+            modifier = Modifier
+                .constrainAs(progress) {
+                    top.linkTo(icon.bottom, margin = 14.dp)
+                    start.linkTo(icon.start)
+                    end.linkTo(icon.end)
+                    width = Dimension.fillToConstraints
+                }
+                .width(100.dp),
+            drawStopIndicator = {}
         )
 
         if (!videoLink.title.isEmpty()) Text(
@@ -137,17 +154,19 @@ fun VideoLinkItem(
                 width = Dimension.fillToConstraints
             }
         )
-        if (videoLink.playedDuration > 0) LinearProgressIndicator(
-            progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
-            modifier = Modifier
-                .constrainAs(progress) {
-                    top.linkTo(metadata.top, margin = 3.dp)
-                    bottom.linkTo(metadata.bottom)
-                    start.linkTo(metadata.end, margin = 12.dp)
-                }
-                .width(100.dp),
-            drawStopIndicator = {}
-        )
+        videoLink.subtitleUrl?.let {
+            Icon(
+                imageVector = Icons.Default.ClosedCaption,
+                contentDescription = null,
+                tint = colorScheme.onBackground.copy(alpha = 0.4f),
+                modifier = Modifier
+                    .size(18.dp)
+                    .constrainAs(cc) {
+                        top.linkTo(metadata.top)
+                        bottom.linkTo(metadata.bottom)
+                        start.linkTo(metadata.end, margin = 7.dp)
+                    })
+        }
     }
 }
 
@@ -162,6 +181,7 @@ private fun PreviewVideoLink() {
                 added = System.currentTimeMillis() - 30000,
                 totalDuration = 4980000L,
                 playedDuration = 2700000L,
+                subtitleUrl = "https://example.com/subtitles.srt"
             )
         )
     }

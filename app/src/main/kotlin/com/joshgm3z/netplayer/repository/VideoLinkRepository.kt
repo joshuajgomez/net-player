@@ -51,8 +51,6 @@ class VideoLinkRepository
                         url = url,
                         title = title,
                         added = System.currentTimeMillis(),
-                        totalDuration = 0,
-                        playedDuration = 0
                     )
                 )
             }
