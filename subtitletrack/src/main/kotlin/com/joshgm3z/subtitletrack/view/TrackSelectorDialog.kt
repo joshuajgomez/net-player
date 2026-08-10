@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,8 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
-import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
 import com.joshgm3z.subtitletrack.repository.SubtitleData
@@ -45,21 +45,18 @@ fun TrackSelectorDialog(
     goBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    SubtitleTrackTheme {
-        if (uiState == null) goBack()
-        else Dialog(
-            onDismissRequest = goBack,
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            TrackSelectorDialogContent(
-                uiState = uiState!!,
-                onBackPress = goBack,
-                onDownloadSubtitleClicked = { viewModel.onDownloadedSubtitleClick(it) },
-                onFindMoreClicked = { viewModel.onFindMoreClicked() },
-                onTrackClicked = { viewModel.onTrackClicked(it) },
-                onLanguageClick = { viewModel.onLanguageClick(it) }
-            )
-        }
+    if (uiState == null) goBack()
+    else Dialog(
+        onDismissRequest = goBack,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        TrackSelectorDialogContent(
+            uiState = uiState!!,
+            onDownloadSubtitleClicked = { viewModel.onDownloadedSubtitleClick(it) },
+            onFindMoreClicked = { viewModel.onFindMoreClicked() },
+            onTrackClicked = { viewModel.onTrackClicked(it) },
+            onLanguageClick = { viewModel.onLanguageClick(it) }
+        )
     }
 }
 
@@ -69,14 +66,12 @@ private fun TrackSelectorDialogContent(
     onDownloadSubtitleClicked: (SubtitleData) -> Unit = {},
     onFindMoreClicked: () -> Unit = {},
     onTrackClicked: (TrackInfo) -> Unit = {},
-    onBackPress: () -> Unit = {},
     onLanguageClick: (String) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
             .width(600.dp)
-            .height(300.dp)
-            .background(color = colorScheme.onBackground),
+            .height(300.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
         Column(
@@ -90,7 +85,6 @@ private fun TrackSelectorDialogContent(
                     is ListState.AudioTracks -> "Audio tracks"
                     else -> "Unknown"
                 },
-                onBackPress = onBackPress,
                 onFindMoreClicked = onFindMoreClicked,
                 showFindMoreButton = uiState.listState is ListState.SubtitleTracks
             )
@@ -127,18 +121,18 @@ private fun TrackSelectorDialogContent(
 @Composable
 private fun TopRow(
     title: String,
-    onBackPress: () -> Unit,
     onFindMoreClicked: () -> Unit,
     showFindMoreButton: Boolean = false
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(55.dp)
+            .padding(horizontal = 15.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CloseButton { onBackPress() }
         Text(
             text = title,
-            style = typography.titleMedium,
             color = colorScheme.onBackground,
             textAlign = TextAlign.Center,
         )
@@ -154,36 +148,16 @@ private fun TopRow(
 }
 
 @Composable
-private fun CloseButton(onClick: () -> Unit) {
-    Icon(
-        imageVector = Icons.Default.ArrowBack,
-        contentDescription = "Close",
-        tint = colorScheme.onBackground
-    )
-}
-
-@Composable
 private fun SearchButton(onClick: () -> Unit) {
-    val color = colorScheme.primary
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(end = 10.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .clickable(true) { onClick() }
-            .padding(horizontal = 10.dp, vertical = 5.dp),
-    ) {
+    Button(onClick = onClick) {
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = null,
-            modifier = Modifier.size(17.dp),
-            tint = color
+            modifier = Modifier.size(20.dp)
         )
         Spacer(Modifier.size(1.dp))
         Text(
             text = "OpenSubtitles.com",
-            style = MaterialTheme.typography.labelLarge,
-            color = color
         )
     }
 }
@@ -191,30 +165,12 @@ private fun SearchButton(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun PreviewTrackSelectorDialogContent() {
-    SubtitleTrackTheme {
+    DarkSurface {
         TrackSelectorDialogContent(
             uiState = TrackSelectorUiState(
                 isLoading = false,
                 listState = ListState.SubtitleTracks(
                     listOf(
-                        TrackInfo(
-                            trackType = TrackType.Subtitle,
-                            label = "Wonder.Women.1994.2004 HDRip",
-                            language = "en",
-                            id = "online"
-                        ),
-                        TrackInfo(
-                            trackType = TrackType.Subtitle,
-                            label = "Wonder.Women.1994.2004 HDRip",
-                            language = "en",
-                            id = "online"
-                        ),
-                        TrackInfo(
-                            trackType = TrackType.Subtitle,
-                            label = "Wonder.Women.1994.2004 HDRip",
-                            language = "en",
-                            id = "online"
-                        ),
                     )
                 )
             )
@@ -225,7 +181,7 @@ private fun PreviewTrackSelectorDialogContent() {
 @Preview
 @Composable
 private fun PreviewSubtitleDownloaderDialog() {
-    SubtitleTrackTheme {
+    DarkSurface {
         TrackSelectorDialogContent(
             uiState = TrackSelectorUiState(
                 isLoading = false,

@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.bundles.hilt)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.constraintlayout)
+    implementation(libs.androidx.compose.icons)
 
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.tooling.preview)

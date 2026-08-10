@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +31,6 @@ import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
 import com.joshgm3z.subtitletrack.repository.SubtitleData
 import com.joshgm3z.subtitletrack.util.languageName
-import com.joshgm3z.subtitletrack.view.theme.SubtitleTrackTheme
 
 @Composable
 fun SubtitleDownloaderContent(
@@ -50,7 +47,7 @@ fun SubtitleDownloaderContent(
                 Text(
                     text = it.languageName(),
                     color = colorScheme.onBackground,
-                    style = typography.labelMedium,
+                    style = typography.labelLarge,
                     modifier = Modifier
                         .clip(chipShape)
                         .clickable(!selected) {
@@ -65,24 +62,24 @@ fun SubtitleDownloaderContent(
                             color = if (selected) colorScheme.primary else Color.Transparent,
                             shape = chipShape
                         )
-                        .padding(horizontal = 5.dp, vertical = 3.dp)
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
                 )
             }
             listSpacing(10.dp)
         }
-        Spacer(Modifier.size(5.dp))
+        Spacer(Modifier.size(15.dp))
         LazyColumn(
             modifier = Modifier
-                .padding(10.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(color = colorScheme.onBackground.copy(alpha = 0.1f))
+                .padding(horizontal = 10.dp)
+                .clip(RoundedCornerShape(10.dp)),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            itemsIndexed(listState.list) { index, item ->
-                SubtitleResultItem(item) {
-                    onClick(item)
+            items(listState.list) {
+                SubtitleResultItem(it) {
+                    onClick(it)
                 }
-                CustomHorizontalDivider(index, listState.list.size)
             }
+            listSpacing(20.dp)
         }
     }
 }
@@ -92,81 +89,83 @@ private fun SubtitleResultItem(
     subtitleData: SubtitleData,
     onClick: () -> Unit = {}
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .clickable(true) {
-                onClick()
-            }
-            .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 8.dp)
-    ) {
-        val (titleRef, languageRef, downloadCountRef, iconRef) = createRefs()
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
-            contentDescription = null,
-            tint = colorScheme.primary,
+    CustomCard(onClick = onClick) {
+        ConstraintLayout(
             modifier = Modifier
-                .constrainAs(iconRef) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
+                .clickable(true) {
+                    onClick()
                 }
-                .background(color = colorScheme.onPrimary, shape = CircleShape)
-                .padding(3.dp)
-                .size(20.dp)
-        )
-        Text(
-            text = subtitleData.title,
-            maxLines = 1,
-            style = typography.bodyMedium,
-            color = colorScheme.onBackground,
-            modifier = Modifier.constrainAs(titleRef) {
-                top.linkTo(parent.top)
-                start.linkTo(iconRef.end, margin = 15.dp)
-            }
-        )
-        val subTextStyle = typography.bodySmall
-        Text(
-            text = subtitleData.language.languageName(),
-            color = colorScheme.primary,
-            style = subTextStyle,
-            modifier = Modifier
-                .constrainAs(languageRef) {
-                    top.linkTo(titleRef.bottom, margin = 3.dp)
-                    start.linkTo(titleRef.start)
-                }
-                .background(
-                    color = colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(5.dp)
-                )
-                .padding(horizontal = 5.dp)
-        )
-        Row(
-            modifier = Modifier.constrainAs(downloadCountRef) {
-                top.linkTo(languageRef.top)
-                start.linkTo(languageRef.end, margin = 5.dp)
-            },
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
         ) {
+            val (titleRef, languageRef, downloadCountRef, iconRef) = createRefs()
             Icon(
-                imageVector = Icons.Default.ArrowDropDown,
+                imageVector = Icons.Default.ArrowDownward,
                 contentDescription = null,
-                modifier = Modifier.size(13.dp),
-                tint = colorScheme.primary
+                tint = colorScheme.primary,
+                modifier = Modifier
+                    .constrainAs(iconRef) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    .background(color = colorScheme.onPrimary, shape = CircleShape)
+                    .padding(5.dp)
+                    .size(20.dp)
             )
             Text(
-                text = subtitleData.downloadCount.toString(),
-                style = subTextStyle,
-                color = colorScheme.primary,
+                text = subtitleData.title,
+                maxLines = 1,
+                style = typography.bodyMedium,
+                color = colorScheme.onBackground,
+                modifier = Modifier.constrainAs(titleRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(iconRef.end, margin = 15.dp)
+                }
             )
+            val subTextStyle = typography.bodyMedium
+            Text(
+                text = subtitleData.language.languageName(),
+                color = colorScheme.primary,
+                style = subTextStyle,
+                modifier = Modifier
+                    .constrainAs(languageRef) {
+                        top.linkTo(titleRef.bottom, margin = 5.dp)
+                        start.linkTo(titleRef.start)
+                    }
+                    .background(
+                        color = colorScheme.primaryContainer,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .padding(horizontal = 5.dp, vertical = 1.dp)
+            )
+            Row(
+                modifier = Modifier.constrainAs(downloadCountRef) {
+                    top.linkTo(languageRef.top)
+                    bottom.linkTo(languageRef.bottom)
+                    start.linkTo(languageRef.end, margin = 5.dp)
+                },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowDownward,
+                    contentDescription = null,
+                    modifier = Modifier.size(15.dp),
+                    tint = colorScheme.primary
+                )
+                Text(
+                    text = subtitleData.downloadCount.toString(),
+                    style = subTextStyle,
+                    color = colorScheme.primary,
+                )
+            }
         }
     }
 }
 
-@Preview
+@DarkPreview
 @Composable
 private fun PreviewSubtitleDownloaderContent() {
-    SubtitleTrackTheme {
+    DarkSurface {
         SubtitleDownloaderContent(
             listState = ListState.OnlineSubtitleTracks(
                 listOf(
