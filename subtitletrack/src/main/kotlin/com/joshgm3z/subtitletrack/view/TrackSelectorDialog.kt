@@ -74,6 +74,7 @@ private fun TrackSelectorDialogContent(
         val sidePadding = 15.dp
         Box(
             modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
                 .width(650.dp)
                 .height(350.dp)
                 .background(color = colorScheme.background),
@@ -146,6 +147,7 @@ private fun TopRow(
         Text(
             text = title,
             color = colorScheme.onBackground,
+            style = typography.titleLarge,
             textAlign = TextAlign.Center,
         )
         Spacer(

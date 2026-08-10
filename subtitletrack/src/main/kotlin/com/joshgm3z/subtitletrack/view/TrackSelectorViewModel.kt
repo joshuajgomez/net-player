@@ -138,7 +138,7 @@ constructor(
         _uiState.update { it?.copy(isLoading = true) }
 
         viewModelScope.launch {
-            val subtitles = subtitleRepository.findSubtitles(title!!)
+            val subtitles = subtitleRepository.findSubtitles(title)
             if (subtitles.isEmpty()) {
                 delay(1.seconds)
                 _uiState.update {
