@@ -12,6 +12,7 @@ import androidx.media3.common.util.UnstableApi
 import com.joshgm3z.subtitletrack.PlayerListener
 import com.joshgm3z.subtitletrack.repository.SubtitleData
 import com.joshgm3z.subtitletrack.repository.SubtitleRepository
+import com.joshgm3z.subtitletrack.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,11 +49,6 @@ data class TrackInfo(
 enum class TrackType {
     Subtitle, Audio
 }
-
-data class TrackButtonState(
-    val enableCaptionsButton: Boolean = false,
-    val enableAudioButton: Boolean = false,
-)
 
 sealed class ListState {
     class SubtitleTracks(val list: List<TrackInfo>) : ListState()
@@ -93,20 +89,17 @@ constructor(
     private var subtitleTracks: List<TrackInfo> = emptyList()
         set(value) {
             field = value
-            Log.info("subtitleTracks = $value")
+            Logger.info("subtitleTracks = $value")
         }
-
-    private val _trackButtonState = MutableStateFlow(TrackButtonState())
-    val trackButtonState = _trackButtonState.asStateFlow()
 
     private var onlineSubtitleTracks = emptyList<SubtitleData>()
 
     init {
-        loadTracksOfType(TrackType.Subtitle)
         viewModelScope.launch {
             playerListener.trackChangesFlow.collectLatest {
                 it?.let {
                     onTracksChanged(it)
+                    loadTracksOfType()
                 }
             }
         }
@@ -123,25 +116,22 @@ constructor(
                 audioTracks_.addAll(group.parseTracks(groupIndex, TrackType.Audio))
         }
 
-        _trackButtonState.update {
-            it.copy(
-                enableCaptionsButton = true,
-                enableAudioButton = audioTracks_.isNotEmpty()
-            )
-        }
         subtitleTracks = subtitleTracks_.plusDisableSubtitleTrack()
 
         if (playerListener.trackToLoad.value is LoadTrack.OnlineSubtitle && subtitleTracks.size > 1)
             closeTrackSelectionPopup()
     }
 
-    private fun loadTracksOfType(trackType: TrackType) {
+    private fun loadTracksOfType() {
         _uiState.update {
             TrackSelectorUiState(
                 listState = ListState.SubtitleTracks(subtitleTracks)
             )
         }
-        Log.debug("_uiState[$trackType] = [${_uiState.value}]")
+        val listState = _uiState.value?.listState
+        if (listState is ListState.SubtitleTracks) {
+            Logger.debug("listState.list = [${listState.list}]")
+        }
     }
 
     fun onFindMoreClicked() {
@@ -210,12 +200,10 @@ constructor(
     }
 
     fun onDownloadedSubtitleClick(subtitleData: SubtitleData) {
-        Log.debug("subtitleData.title = [${subtitleData}]")
         _uiState.update { it?.copy(isLoading = true) }
 
         viewModelScope.launch {
             val url = subtitleRepository.getSubtitleUrl(subtitleData.fileId)
-            Log.info("JJJJJJ0 load url = $url")
             playerListener.trackToLoad.value =
                 LoadTrack.OnlineSubtitle(subtitleData.copy(url = url))
         }
@@ -258,7 +246,7 @@ private fun Tracks.Group.parseTracks(
             trackType = trackType,
             trackGroup = mediaTrackGroup
         ).apply {
-//            Logger.debug("trackType=$trackType,$this")
+            Log.debug("trackType=$trackType,$this")
         }
     }
     return tracks

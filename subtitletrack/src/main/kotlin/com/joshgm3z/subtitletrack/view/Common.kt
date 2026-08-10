@@ -88,6 +88,7 @@ fun CustomCard(
             )
             .fillMaxWidth()
             .padding(paddingValues),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         content()
     }
