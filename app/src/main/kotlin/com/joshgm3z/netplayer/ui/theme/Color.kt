@@ -19,4 +19,4 @@ fun textColor() = colorScheme.onSurface
 fun subTextColor() = colorScheme.onSurface.copy(alpha = 0.3f)
 
 @Composable
-fun cardColor() = colorScheme.onBackground.copy(alpha = 0.05f)
+fun cardColor() = colorScheme.onBackground.copy(alpha = 0.1f)

@@ -5,6 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +23,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -50,37 +56,32 @@ fun VideoLinkItem(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    ConstraintLayout(
+    Row(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .border(
-                width = 2.dp,
-                color = if (isFocused) colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(10.dp)
-            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
             )
+            .border(
+                width = 2.dp,
+                color = if (isFocused) colorScheme.primary else Color.Transparent,
+                shape = RoundedCornerShape(10.dp)
+            )
             .background(
                 color = if (!isFocused) cardColor()
                 else colorScheme.primaryContainer.copy(alpha = 0.3f)
             )
-            .padding(horizontal = 15.dp, vertical = 10.dp)
-            .width(450.dp),
+            .width(450.dp)
+            .padding(vertical = 10.dp, horizontal = 15.dp),
     ) {
-        val (icon, title, url, metadata, progress, cc) = createRefs()
         Icon(
             imageVector = if (isFocused) Icons.Default.PlayArrow
             else Icons.Default.Link,
             tint = colorScheme.primary,
             contentDescription = null,
             modifier = Modifier
-                .constrainAs(icon) {
-                    top.linkTo(parent.top, margin = 3.dp)
-                    start.linkTo(parent.start)
-                }
                 .background(
                     color = if (isFocused) colorScheme.primaryContainer
                     else colorScheme.onBackground.copy(alpha = 0.2f),
@@ -90,82 +91,59 @@ fun VideoLinkItem(
                 .size(20.dp)
         )
 
-        if (videoLink.playedDuration > 0) LinearProgressIndicator(
-            progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
-            modifier = Modifier
-                .constrainAs(progress) {
-                    top.linkTo(icon.bottom, margin = 14.dp)
-                    start.linkTo(icon.start)
-                    end.linkTo(icon.end)
-                    width = Dimension.fillToConstraints
-                }
-                .width(100.dp),
-            drawStopIndicator = {}
-        )
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            if (!videoLink.title.isEmpty()) Text(
+                text = videoLink.title,
+                style = typography.titleMedium,
+                color = textColor(),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
+            )
 
-        if (!videoLink.title.isEmpty()) Text(
-            text = videoLink.title,
-            style = typography.titleMedium,
-            color = textColor(),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 2,
-            modifier = Modifier
-                .constrainAs(title) {
-                    top.linkTo(parent.top)
-                    start.linkTo(icon.end, margin = 10.dp)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .padding(bottom = 5.dp),
-        )
+            Text(
+                text = videoLink.url,
+                style = typography.bodySmall,
+                color = textColor().copy(alpha = 0.5f),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+            )
 
-        Text(
-            text = videoLink.url,
-            style = typography.bodySmall,
-            color = textColor().copy(alpha = 0.5f),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier.constrainAs(url) {
-                top.linkTo(title.bottom)
-                start.linkTo(metadata.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = buildAnnotatedString {
+                        val dot = "  •  "
+                        append(videoLink.added.relativeTime())
+                        if (videoLink.totalDuration > 0) {
+                            withStyle(style = SpanStyle(color = colorScheme.primary)) {
+                                append(dot)
+                            }
+                            append(videoLink.totalDuration.toTextTime())
+                        }
+                    },
+                    style = typography.bodySmall,
+                    color = subTextColor(),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
+                Spacer(Modifier.size(6.dp))
+                videoLink.subtitleUrl?.let {
+                    Icon(
+                        imageVector = Icons.Default.ClosedCaption,
+                        contentDescription = null,
+                        tint = colorScheme.onBackground.copy(alpha = 0.4f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
-        )
 
-        Text(
-            text = buildAnnotatedString {
-                val dot = "  •  "
-                append(videoLink.added.relativeTime())
-                if (videoLink.totalDuration > 0) {
-                    withStyle(style = SpanStyle(color = colorScheme.primary)) {
-                        append(dot)
-                    }
-                    append(videoLink.totalDuration.toTextTime())
-                }
-            },
-            style = typography.bodySmall,
-            color = subTextColor(),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier.constrainAs(metadata) {
-                top.linkTo(url.bottom, margin = 5.dp)
-                start.linkTo(icon.end, margin = 10.dp)
-                width = Dimension.fillToConstraints
-            }
-        )
-        videoLink.subtitleUrl?.let {
-            Icon(
-                imageVector = Icons.Default.ClosedCaption,
-                contentDescription = null,
-                tint = colorScheme.onBackground.copy(alpha = 0.4f),
-                modifier = Modifier
-                    .size(18.dp)
-                    .constrainAs(cc) {
-                        top.linkTo(metadata.top)
-                        bottom.linkTo(metadata.bottom)
-                        start.linkTo(metadata.end, margin = 7.dp)
-                    })
+            if (videoLink.playedDuration > 0) LinearProgressIndicator(
+                progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
+                drawStopIndicator = {}
+            )
         }
     }
 }
