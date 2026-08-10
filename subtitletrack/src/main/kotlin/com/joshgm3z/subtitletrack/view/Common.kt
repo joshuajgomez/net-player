@@ -21,11 +21,6 @@ fun LazyListScope.listSpacing(size: Dp = 50.dp) = item {
 }
 
 @Composable
-fun CustomHorizontalDivider(index: Int, size: Int) {
-    if (index < size - 1) HorizontalDivider(modifier = Modifier.alpha(0.5f))
-}
-
-@Composable
 fun DarkSurface(content: @Composable () -> Unit) {
     SubtitleTrackTheme {
         Surface(color = colorScheme.background) {

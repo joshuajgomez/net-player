@@ -13,7 +13,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 @Composable
-fun textColor() = colorScheme.onSurface
+fun textColor() = colorScheme.onSurface.copy(alpha = 0.8f)
 
 @Composable
 fun subTextColor() = colorScheme.onSurface.copy(alpha = 0.3f)

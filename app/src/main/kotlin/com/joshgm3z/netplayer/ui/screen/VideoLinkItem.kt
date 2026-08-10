@@ -142,7 +142,9 @@ fun VideoLinkItem(
             if (videoLink.playedDuration > 0) LinearProgressIndicator(
                 progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
                 modifier = Modifier.fillMaxWidth(),
-                drawStopIndicator = {}
+                drawStopIndicator = {},
+                trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
+                color = colorScheme.primaryContainer.copy(alpha = 0.6f)
             )
         }
     }
