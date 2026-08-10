@@ -70,56 +70,63 @@ private fun TrackSelectorDialogContent(
     onTrackClicked: (TrackInfo) -> Unit = {},
     onLanguageClick: (String) -> Unit = {},
 ) {
-    val sidePadding = 15.dp
-    Box(
-        modifier = Modifier
-            .width(650.dp)
-            .height(350.dp)
-            .background(color = colorScheme.background),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Column(
+    SubtitleTrackTheme {
+        val sidePadding = 15.dp
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = sidePadding, end = sidePadding, top = 5.dp, bottom = sidePadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .width(650.dp)
+                .height(350.dp)
+                .background(color = colorScheme.background),
+            contentAlignment = Alignment.BottomCenter,
         ) {
-            TopRow(
-                title = when (uiState.listState) {
-                    is ListState.SubtitleTracks -> "Subtitle tracks"
-                    is ListState.OnlineSubtitleTracks -> "Subtitles from OpenSubtitles.com"
-                    is ListState.AudioTracks -> "Audio tracks"
-                    else -> "Unknown"
-                },
-                onFindMoreClicked = onFindMoreClicked,
-                showFindMoreButton = uiState.listState is ListState.SubtitleTracks
-            )
-            when (uiState.listState) {
-                is ListState.OnlineSubtitleTracks -> SubtitleDownloaderContent(
-                    listState = uiState.listState,
-                    onClick = onDownloadSubtitleClicked,
-                    onLanguageClick = onLanguageClick
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = sidePadding,
+                        end = sidePadding,
+                        top = 5.dp,
+                        bottom = sidePadding
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TopRow(
+                    title = when (uiState.listState) {
+                        is ListState.SubtitleTracks -> "Subtitle tracks"
+                        is ListState.OnlineSubtitleTracks -> "Subtitles from OpenSubtitles.com"
+                        is ListState.AudioTracks -> "Audio tracks"
+                        else -> "Unknown"
+                    },
+                    onFindMoreClicked = onFindMoreClicked,
+                    showFindMoreButton = uiState.listState is ListState.SubtitleTracks
                 )
+                when (uiState.listState) {
+                    is ListState.OnlineSubtitleTracks -> SubtitleDownloaderContent(
+                        listState = uiState.listState,
+                        onClick = onDownloadSubtitleClicked,
+                        onLanguageClick = onLanguageClick
+                    )
 
-                is ListState.SubtitleTracks -> SubtitleTracks(
-                    listState = uiState.listState,
-                    onClick = onTrackClicked,
-                )
+                    is ListState.SubtitleTracks -> SubtitleTracks(
+                        listState = uiState.listState,
+                        onClick = onTrackClicked,
+                    )
 
-                is ListState.AudioTracks -> AudioTracks(
-                    listState = uiState.listState,
-                    onClick = onTrackClicked,
-                )
+                    is ListState.AudioTracks -> AudioTracks(
+                        listState = uiState.listState,
+                        onClick = onTrackClicked,
+                    )
 
-                else -> {}
+                    else -> {}
+                }
             }
-        }
-        if (uiState.isLoading) {
-            Surface(
-                color = Color.Black.copy(alpha = 0.5f),
-                modifier = Modifier.fillMaxSize()
-            ) {}
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            if (uiState.isLoading) {
+                Surface(
+                    color = Color.Black.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxSize()
+                ) {}
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }
