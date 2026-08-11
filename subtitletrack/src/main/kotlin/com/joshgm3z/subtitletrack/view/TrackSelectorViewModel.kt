@@ -118,6 +118,7 @@ constructor(
                 audioTracks_.addAll(group.parseTracks(groupIndex, TrackType.Audio))
         }
 
+        playerListener.enableCcButton.value = true
         subtitleTracks = subtitleTracks_.plusDisableSubtitleTrack()
 
         if (playerListener.trackToLoad.value is LoadTrack.OnlineSubtitle && subtitleTracks.size > 1)

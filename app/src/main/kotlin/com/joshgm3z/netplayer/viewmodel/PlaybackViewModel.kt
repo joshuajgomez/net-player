@@ -12,6 +12,7 @@ import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class PlaybackUiState(
@@ -19,6 +20,7 @@ data class PlaybackUiState(
     val title: String,
     val url: String,
     val trackToLoad: LoadTrack? = null,
+    val enableCcButton: Boolean = false,
 )
 
 @HiltViewModel
@@ -55,13 +57,22 @@ constructor(
             )
         }
         viewModelScope.launch {
-            playerListener.trackToLoad.collect {
-                _uiState.value = _uiState.value?.copy(trackToLoad = it)
-                if (it is LoadTrack.OnlineSubtitle)
+            playerListener.trackToLoad.collect { track ->
+                _uiState.update {
+                    it?.copy(trackToLoad = track)
+                }
+                if (track is LoadTrack.OnlineSubtitle)
                     updateSelectedSubtitle(
-                        it.subtitleData.url!!,
-                        it.subtitleData.language!!
+                        track.subtitleData.url!!,
+                        track.subtitleData.language!!
                     )
+            }
+        }
+        viewModelScope.launch {
+            playerListener.enableCcButton.collect { enable ->
+                _uiState.update {
+                    it?.copy(enableCcButton = enable)
+                }
             }
         }
     }
@@ -83,7 +94,12 @@ constructor(
     private fun updateSelectedSubtitle(subtitleUrl: String, language: String) {
         viewModelScope.launch {
             val videoLink = repository.getVideoLink(url)
-            repository.update(videoLink.copy(subtitleUrl = subtitleUrl, subtitleLanguage = language))
+            repository.update(
+                videoLink.copy(
+                    subtitleUrl = subtitleUrl,
+                    subtitleLanguage = language
+                )
+            )
         }
     }
 }
