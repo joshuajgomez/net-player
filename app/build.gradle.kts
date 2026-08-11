@@ -65,6 +65,19 @@ android {
             pickFirsts += "META-INF/gradle/incremental.annotation.processors"
         }
     }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("prod") {
+            dimension = "environment"
+        }
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            resValue("string", "app_name", "NetPlayer-dev")
+            isDefault = true
+        }
+    }
 }
 
 dependencies {
