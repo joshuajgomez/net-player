@@ -124,6 +124,11 @@ private fun PlaybackScreenContent(
                 }
             }
         },
+        update = {
+            it.findViewById<ImageButton>(R.id.custom_exo_subtitle)?.let { cc ->
+                cc.isEnabled = uiState.enableCcButton
+            }
+        },
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
@@ -134,14 +139,16 @@ private fun PlaybackScreenContent(
             updateLastPlayedPosition(exoPlayer.currentPosition)
     }
 
-    uiState.trackToLoad?.let {
-        when (it) {
-            is LoadTrack.OnlineSubtitle -> with(it.subtitleData) {
-                exoPlayer.loadSubtitle(this)
-            }
+    LaunchedEffect(uiState.trackToLoad) {
+        uiState.trackToLoad?.let {
+            when (it) {
+                is LoadTrack.OnlineSubtitle -> with(it.subtitleData) {
+                    exoPlayer.loadSubtitle(this)
+                }
 
-            is LoadTrack.OfflineTrack -> with(it.trackInfo) {
-                exoPlayer.switchTrack(this)
+                is LoadTrack.OfflineTrack -> with(it.trackInfo) {
+                    exoPlayer.switchTrack(this)
+                }
             }
         }
     }
