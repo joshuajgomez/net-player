@@ -81,7 +81,7 @@ private fun SubtitleResultItem(
                 .fillMaxWidth()
         ) {
             val (titleRef, languageRef, downloadCountRef, iconRef) = createRefs()
-            val accentColor = colorScheme.primaryContainer.copy(alpha = 0.5f)
+            val accentColor = colorScheme.primaryContainer
             Icon(
                 imageVector = Icons.Default.ArrowDownward,
                 contentDescription = null,

@@ -6,9 +6,10 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.darkColorScheme
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
+    primary = Orange80,
+    primaryContainer = Gray30,
+//    secondary = PurpleGrey80,
+//    tertiary = Pink80,
     background = Color.Black
 )
 

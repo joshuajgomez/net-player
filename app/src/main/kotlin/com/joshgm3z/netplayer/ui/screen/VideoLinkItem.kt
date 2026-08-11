@@ -143,8 +143,8 @@ fun VideoLinkItem(
                 progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
                 modifier = Modifier.fillMaxWidth(),
                 drawStopIndicator = {},
-                trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
-                color = colorScheme.primaryContainer
+                color = colorScheme.primary,
+                trackColor = subTextColor()
             )
         }
     }

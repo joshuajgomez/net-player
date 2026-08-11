@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Replay
@@ -37,12 +38,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Surface
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
+import com.joshgm3z.netplayer.ui.theme.cardColor
 import com.joshgm3z.netplayer.ui.theme.subTextColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
@@ -131,7 +134,16 @@ fun CustomButton(
     imageVector: ImageVector? = null,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, modifier = Modifier.width(200.dp)) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.width(200.dp),
+        shape = ButtonDefaults.shape(
+            shape = RoundedCornerShape(5.dp)
+        ),
+        colors = ButtonDefaults.colors(
+            containerColor = cardColor(),
+        )
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -155,12 +167,12 @@ fun QrCode(qrCode: Bitmap?) {
         Box(
             modifier = Modifier
                 .size(200.dp)
-                .background(color = colorScheme.primary)
+                .background(color = cardColor())
         ) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(Alignment.Center),
-                color = colorScheme.onPrimary
+                color = colorScheme.primary
             )
             qrCode?.let {
                 Image(
@@ -224,9 +236,9 @@ private fun PreviewHomeScreenContent() {
         HomeScreenContent(
             HomeUiState(
                 videoLinks = listOf(
-                    VideoLink("https://example.com/video1", "Video 1", 1202012L, 12121L, 32323L),
-                    VideoLink("https://example.com/video2", "Video 2", 1202012L, 12121L, 32323L),
-                    VideoLink("https://example.com/video3", "Video 3", 1202012L, 12121L, 32323L),
+                    VideoLink("https://example.com/video1", "Video 1", 1202012L, 52121L, 32323L),
+                    VideoLink("https://example.com/video2", "Video 2", 1202012L, 12121L, 323L),
+                    VideoLink("https://example.com/video3", "Video 3", 1202012L, 12121L, 11500L),
                 ),
                 qrCode = null
             )

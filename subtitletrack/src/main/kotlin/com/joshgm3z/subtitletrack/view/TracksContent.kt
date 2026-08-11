@@ -134,7 +134,8 @@ private fun PreviewTracksContent() {
                     TrackInfo(
                         trackType = TrackType.Subtitle,
                         label = "Wonder.Women.1994.2004 HDRip",
-                        language = "de"
+                        language = "de",
+                        isSelected = true
                     ),
                     TrackInfo(
                         trackType = TrackType.Subtitle,
