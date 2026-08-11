@@ -9,8 +9,15 @@ data class VideoLink(
     val url: String,
     val title: String,
     val added: Long,
-    val totalDuration: Long = 0,
-    val playedDuration: Long = 0,
+    val totalDuration: Long? = null,
+    val playedDuration: Long? = null,
     val subtitleUrl: String? = null,
     val subtitleLanguage: String? = null,
-)
+) {
+    val progress: Float
+        get() = when {
+            totalDuration == null || playedDuration == null -> 0f
+            totalDuration == 0L || playedDuration == 0L -> 0f
+            else -> totalDuration.toFloat() / playedDuration.toFloat()
+        }
+}

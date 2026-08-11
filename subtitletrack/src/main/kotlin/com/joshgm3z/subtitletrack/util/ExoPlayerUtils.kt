@@ -12,7 +12,7 @@ import com.joshgm3z.subtitletrack.view.TrackType
 import org.openjdk.tools.sjavac.Log
 
 fun Player.switchTrack(trackInfo: TrackInfo) {
-    Log.info("trackInfo = [${trackInfo}]")
+    Logger.info("trackInfo = [${trackInfo}]")
     val parametersBuilder = trackSelectionParameters.buildUpon()
 
     when (trackInfo.trackType) {
@@ -42,7 +42,7 @@ fun Player.switchTrack(trackInfo: TrackInfo) {
 }
 
 fun Player.loadSubtitle(subtitleData: SubtitleData) {
-    Log.info("subtitleData = [${subtitleData}]")
+    Logger.info("subtitleData = [${subtitleData}]")
     val currentMediaItem = currentMediaItem ?: return
     val currentPosition = currentPosition
     val playWhenReady = playWhenReady

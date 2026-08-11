@@ -31,6 +31,7 @@ import com.joshgm3z.netplayer.R
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.ui.util.errorListener
+import com.joshgm3z.netplayer.util.Logger
 import com.joshgm3z.netplayer.viewmodel.PlaybackUiState
 import com.joshgm3z.netplayer.viewmodel.PlaybackViewModel
 import com.joshgm3z.subtitletrack.util.loadSubtitle
@@ -93,6 +94,7 @@ private fun PlaybackScreenContent(
     }
 
     LaunchedEffect(uiState.url) {
+        Logger.debug("Loading media ${uiState.url}")
         val mediaItem = MediaItem.Builder()
             .setUri(uiState.url)
             .build()
@@ -114,6 +116,7 @@ private fun PlaybackScreenContent(
 
     AndroidView(
         factory = { ctx ->
+            Logger.debug("factory custom_player_view")
             val playerView = LayoutInflater.from(ctx)
                 .inflate(R.layout.custom_player_view, null) as PlayerView
             playerView.apply {

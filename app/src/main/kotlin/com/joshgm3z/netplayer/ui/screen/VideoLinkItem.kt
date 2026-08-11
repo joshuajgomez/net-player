@@ -32,8 +32,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
@@ -116,11 +114,11 @@ fun VideoLinkItem(
                     text = buildAnnotatedString {
                         val dot = "  •  "
                         append(videoLink.added.relativeTime())
-                        if (videoLink.totalDuration > 0) {
+                        videoLink.totalDuration?.let {
                             withStyle(style = SpanStyle(color = colorScheme.primary)) {
                                 append(dot)
                             }
-                            append(videoLink.totalDuration.toTextTime())
+                            append(it.toTextTime())
                         }
                     },
                     style = typography.bodySmall,
@@ -139,8 +137,8 @@ fun VideoLinkItem(
                 }
             }
 
-            if (videoLink.playedDuration > 0) LinearProgressIndicator(
-                progress = { videoLink.playedDuration.toFloat() / videoLink.totalDuration.toFloat() },
+            if (videoLink.progress > 0) LinearProgressIndicator(
+                progress = { videoLink.progress },
                 modifier = Modifier.fillMaxWidth(),
                 drawStopIndicator = {},
                 trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
