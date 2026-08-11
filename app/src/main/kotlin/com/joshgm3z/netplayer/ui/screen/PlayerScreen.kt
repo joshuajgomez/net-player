@@ -112,10 +112,6 @@ private fun PlaybackScreenContent(
         }
     }
 
-    context.findActivity()?.findViewById<ImageButton>(R.id.custom_exo_subtitle)?.let {
-        it.isEnabled = uiState.enableCcButton
-    }
-
     AndroidView(
         factory = { ctx ->
             val playerView = LayoutInflater.from(ctx)

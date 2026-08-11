@@ -144,7 +144,7 @@ fun VideoLinkItem(
                 modifier = Modifier.fillMaxWidth(),
                 drawStopIndicator = {},
                 trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
-                color = colorScheme.primaryContainer.copy(alpha = 0.6f)
+                color = colorScheme.primaryContainer
             )
         }
     }
