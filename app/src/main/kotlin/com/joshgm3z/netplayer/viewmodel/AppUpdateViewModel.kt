@@ -26,10 +26,16 @@ data class SelfUpdateUiState(
     val buttonAction: ButtonAction = ButtonAction.UpdateNow,
 )
 
-private const val appUrl =
-    "https://github.com/joshuajgomez/net-player/releases/download/main-release/NetPlayer-app.apk"
-private const val appTagUrl =
-    "https://api.github.com/repos/joshuajgomez/net-player/releases/latest"
+@Suppress("KotlinConstantConditions")
+val tag = when (BuildConfig.FLAVOR) {
+    "prod" -> "main-release"
+    else -> "dev-release"
+}
+
+private val appUrl: String
+    get() = "https://github.com/joshuajgomez/net-player/releases/download/$tag/NetPlayer-app.apk"
+private val appTagUrl: String
+    get() = "https://api.github.com/repos/joshuajgomez/net-player/releases/tags/$tag"
 
 enum class ButtonAction(val text: String) {
     UpdateNow("Update now"),
