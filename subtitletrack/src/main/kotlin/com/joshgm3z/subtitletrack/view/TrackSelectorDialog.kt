@@ -96,7 +96,7 @@ private fun TrackSelectorDialogContent(
                         is ListState.SubtitleTracks -> "Subtitle tracks"
                         is ListState.OnlineSubtitleTracks -> "Subtitles from OpenSubtitles.com"
                         is ListState.AudioTracks -> "Audio tracks"
-                        else -> "Unknown"
+                        else -> "Loading tracks"
                     },
                     onFindMoreClicked = onFindMoreClicked,
                     showFindMoreButton = uiState.listState is ListState.SubtitleTracks

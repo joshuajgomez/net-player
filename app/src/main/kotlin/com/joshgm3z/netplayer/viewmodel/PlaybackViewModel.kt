@@ -20,7 +20,6 @@ data class PlaybackUiState(
     val title: String,
     val url: String,
     val trackToLoad: LoadTrack? = null,
-    val enableCcButton: Boolean = false,
 )
 
 @HiltViewModel
@@ -66,13 +65,6 @@ constructor(
                         track.subtitleData.url!!,
                         track.subtitleData.language!!
                     )
-            }
-        }
-        viewModelScope.launch {
-            playerListener.enableCcButton.collect { enable ->
-                _uiState.update {
-                    it?.copy(enableCcButton = enable)
-                }
             }
         }
     }

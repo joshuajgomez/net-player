@@ -11,5 +11,4 @@ class PlayerListener
 @Inject constructor() {
     val trackChangesFlow = MutableStateFlow<Tracks?>(null)
     val trackToLoad = MutableStateFlow<LoadTrack?>(null)
-    val enableCcButton = MutableStateFlow(false)
 }

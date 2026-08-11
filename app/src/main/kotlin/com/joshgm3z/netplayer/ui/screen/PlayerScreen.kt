@@ -124,11 +124,6 @@ private fun PlaybackScreenContent(
                 }
             }
         },
-        update = {
-            it.findViewById<ImageButton>(R.id.custom_exo_subtitle)?.let { cc ->
-                cc.isEnabled = uiState.enableCcButton
-            }
-        },
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Black)
