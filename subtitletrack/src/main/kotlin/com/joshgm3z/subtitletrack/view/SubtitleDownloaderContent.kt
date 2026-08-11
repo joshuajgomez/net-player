@@ -81,6 +81,7 @@ private fun SubtitleResultItem(
                 .fillMaxWidth()
         ) {
             val (titleRef, languageRef, downloadCountRef, iconRef) = createRefs()
+            val accentColor = colorScheme.primaryContainer.copy(alpha = 0.5f)
             Icon(
                 imageVector = Icons.Default.ArrowDownward,
                 contentDescription = null,
@@ -91,7 +92,7 @@ private fun SubtitleResultItem(
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                     }
-                    .background(color = colorScheme.onPrimary, shape = CircleShape)
+                    .background(color = accentColor, shape = CircleShape)
                     .padding(5.dp)
                     .size(20.dp)
             )
@@ -117,7 +118,7 @@ private fun SubtitleResultItem(
                         start.linkTo(titleRef.start)
                     }
                     .background(
-                        color = colorScheme.primaryContainer.copy(alpha = 0.4f),
+                        color = accentColor,
                         shape = RoundedCornerShape(5.dp)
                     )
                     .padding(horizontal = 5.dp, vertical = 1.dp)
