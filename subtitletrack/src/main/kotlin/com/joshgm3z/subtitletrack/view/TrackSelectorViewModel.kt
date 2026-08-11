@@ -99,7 +99,9 @@ constructor(
             playerListener.trackChangesFlow.collectLatest {
                 it?.let {
                     onTracksChanged(it)
-                    loadTracksOfType()
+                    if (uiState.value?.listState !is ListState.OnlineSubtitleTracks) {
+                        loadSubtitleTracks()
+                    }
                 }
             }
         }
@@ -122,15 +124,11 @@ constructor(
             closeTrackSelectionPopup()
     }
 
-    private fun loadTracksOfType() {
+    private fun loadSubtitleTracks() {
         _uiState.update {
             TrackSelectorUiState(
                 listState = ListState.SubtitleTracks(subtitleTracks)
             )
-        }
-        val listState = _uiState.value?.listState
-        if (listState is ListState.SubtitleTracks) {
-            Logger.debug("listState.list = [${listState.list}]")
         }
     }
 
