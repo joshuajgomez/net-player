@@ -57,7 +57,7 @@ jobs:
             echo "IS_PRERELEASE=false" >> $GITHUB_ENV
           fi
 
-      - name: Build APK (:app)
+      - name: Build Release APK (:app)
         run: ./gradlew ${{ env.GRADLE_TASK }} -PversionNameOverride=${{ env.RELEASE_TAG }} -PversionCodeOverride=${{ env.RELEASE_CODE }}
 
       - name: Clear Existing Release and Tag
@@ -81,7 +81,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.RELEASE_NAME }}
-          name: ${{ env.RELEASE_TAG_VERSION }} (${{ env.RELEASE_NAME }})
+          name: ${{ env.RELEASE_TAG_VERSION }}
           prerelease: ${{ env.IS_PRERELEASE == 'true' }}
           files: release_artifacts/NetPlayer-app.apk
           body: |
