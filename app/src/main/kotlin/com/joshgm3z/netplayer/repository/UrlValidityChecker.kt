@@ -31,7 +31,14 @@ class UrlValidityChecker
                 val responseCode = connection.responseCode
 
                 // Check if response is successful (200 OK)
-                if (responseCode !in 200..299) return@withContext "File not found"
+                if (responseCode !in 200..299) {
+                    return@withContext when (responseCode) {
+                        HttpURLConnection.HTTP_NOT_FOUND -> "File not found"
+                        HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_UNAUTHORIZED -> "Access denied"
+                        HttpURLConnection.HTTP_BAD_GATEWAY, HttpURLConnection.HTTP_UNAVAILABLE -> "Server unavailable"
+                        else -> "Error connecting to server ($responseCode)"
+                    }
+                }
 
                 // Verify the Content-Type header
                 val contentType = connection.contentType ?: ""

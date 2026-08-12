@@ -59,10 +59,11 @@ fun VideoLinkItem(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .clickable(
-                enabled = videoLink.linkInvalid == null,
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = onClick
+                onClick = {
+                    if (videoLink.linkInvalid == null) onClick()
+                }
             )
             .border(
                 width = 2.dp,
@@ -159,24 +160,25 @@ fun VideoLinkItem(
 fun ErrorText(error: String) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 10.dp)
             .background(
-                color = colorScheme.error,
+                color = colorScheme.tertiaryContainer,
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(horizontal = 6.dp, vertical = 3.dp),
+            .padding(horizontal = 8.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = Icons.Default.Error,
             contentDescription = null,
-            tint = colorScheme.onError,
+            tint = colorScheme.onTertiaryContainer,
             modifier = Modifier.size(18.dp)
         )
         Spacer(Modifier.size(5.dp))
         Text(
             text = error,
-            color = colorScheme.onError,
+            color = colorScheme.onTertiaryContainer,
             style = typography.bodyMedium
         )
     }
