@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClosedCaption
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.LinearProgressIndicator
@@ -58,6 +59,7 @@ fun VideoLinkItem(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .clickable(
+                enabled = videoLink.linkInvalid == null,
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
@@ -75,7 +77,7 @@ fun VideoLinkItem(
             .padding(vertical = 13.dp, horizontal = 18.dp),
     ) {
         Icon(
-            imageVector = if (isFocused) Icons.Default.PlayArrow
+            imageVector = if (isFocused && videoLink.linkInvalid == null) Icons.Default.PlayArrow
             else Icons.Default.Link,
             tint = colorScheme.primary,
             contentDescription = null,
@@ -146,7 +148,37 @@ fun VideoLinkItem(
                 trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
                 color = colorScheme.primaryContainer
             )
+            videoLink.linkInvalid?.let {
+                ErrorText(it)
+            }
         }
+    }
+}
+
+@Composable
+fun ErrorText(error: String) {
+    Row(
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .background(
+                color = colorScheme.error,
+                shape = RoundedCornerShape(4.dp)
+            )
+            .padding(horizontal = 6.dp, vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Error,
+            contentDescription = null,
+            tint = colorScheme.onError,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(Modifier.size(5.dp))
+        Text(
+            text = error,
+            color = colorScheme.onError,
+            style = typography.bodyMedium
+        )
     }
 }
 
@@ -162,7 +194,9 @@ private fun PreviewVideoLink() {
                 totalDuration = 4980000L,
                 playedDuration = 2700000L,
                 subtitleUrl = "https://example.com/subtitles.srt"
-            )
+            ).apply {
+                linkInvalid = "File format not supported"
+            }
         )
     }
 }

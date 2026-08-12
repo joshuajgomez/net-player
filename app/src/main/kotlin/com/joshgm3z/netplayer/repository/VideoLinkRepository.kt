@@ -4,6 +4,7 @@ import com.joshgm3z.netplayer.repository.room.VideoLinkDao
 import com.joshgm3z.netplayer.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ class VideoLinkRepository
     private val firestore: FirestoreWrapper,
     private val dataStoreWrapper: DatastoreWrapper,
     private val scope: CoroutineScope,
+    private val urlValidityChecker: UrlValidityChecker
 ) {
 
     suspend fun getSessionId(): String =
@@ -58,7 +60,13 @@ class VideoLinkRepository
     }
 
     fun videoLinksFlow(): Flow<List<VideoLink>> {
-        return videoLinkDao.getAllFlow()
+        return videoLinkDao.getAllFlow().map {
+            it.map { videoLink ->
+                videoLink.apply {
+                    linkInvalid = urlValidityChecker.isUrlInvalid(videoLink.url)
+                }
+            }
+        }
     }
 
     suspend fun update(videoLink: VideoLink) {

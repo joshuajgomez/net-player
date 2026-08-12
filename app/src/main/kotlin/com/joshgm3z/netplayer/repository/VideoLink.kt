@@ -14,6 +14,8 @@ data class VideoLink(
     val subtitleUrl: String? = null,
     val subtitleLanguage: String? = null,
 ) {
+    var linkInvalid: String? = null
+
     val progress: Float
         get() = when {
             totalDuration == null || playedDuration == null -> 0f
