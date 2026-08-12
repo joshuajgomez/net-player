@@ -72,7 +72,7 @@ fun VideoLinkItem(
                 else colorScheme.primaryContainer.copy(alpha = 0.3f)
             )
             .width(450.dp)
-            .padding(vertical = 10.dp, horizontal = 15.dp),
+            .padding(vertical = 13.dp, horizontal = 18.dp),
     ) {
         Icon(
             imageVector = if (isFocused) Icons.Default.PlayArrow
@@ -139,7 +139,9 @@ fun VideoLinkItem(
 
             if (videoLink.progress > 0) LinearProgressIndicator(
                 progress = { videoLink.progress },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp),
                 drawStopIndicator = {},
                 trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
                 color = colorScheme.primaryContainer
@@ -156,7 +158,7 @@ private fun PreviewVideoLink() {
             videoLink = VideoLink(
                 title = "Sample Video Link",
                 url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",
-                added = System.currentTimeMillis() - 30000,
+                added = System.currentTimeMillis() - 300000,
                 totalDuration = 4980000L,
                 playedDuration = 2700000L,
                 subtitleUrl = "https://example.com/subtitles.srt"

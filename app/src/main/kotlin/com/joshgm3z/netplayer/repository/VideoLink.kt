@@ -18,6 +18,6 @@ data class VideoLink(
         get() = when {
             totalDuration == null || playedDuration == null -> 0f
             totalDuration == 0L || playedDuration == 0L -> 0f
-            else -> totalDuration.toFloat() / playedDuration.toFloat()
+            else -> playedDuration.toFloat() / totalDuration.toFloat()
         }
 }
