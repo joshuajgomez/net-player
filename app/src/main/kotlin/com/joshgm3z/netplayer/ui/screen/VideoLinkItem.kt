@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,7 @@ fun VideoLinkItem(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-
+    val isLinkValid = videoLink.linkInvalid == null
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
@@ -62,7 +63,7 @@ fun VideoLinkItem(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = {
-                    if (videoLink.linkInvalid == null) onClick()
+                    if (isLinkValid) onClick()
                 }
             )
             .border(
@@ -78,7 +79,7 @@ fun VideoLinkItem(
             .padding(vertical = 13.dp, horizontal = 18.dp),
     ) {
         Icon(
-            imageVector = if (isFocused && videoLink.linkInvalid == null) Icons.Default.PlayArrow
+            imageVector = if (isFocused && isLinkValid) Icons.Default.PlayArrow
             else Icons.Default.Link,
             tint = colorScheme.primary,
             contentDescription = null,
@@ -110,6 +111,8 @@ fun VideoLinkItem(
                 color = textColor().copy(alpha = 0.5f),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
+                textDecoration = if (!isLinkValid) TextDecoration.LineThrough
+                else TextDecoration.None
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -140,7 +143,7 @@ fun VideoLinkItem(
                 }
             }
 
-            if (videoLink.progress > 0) LinearProgressIndicator(
+            if (videoLink.progress > 0 && isLinkValid) LinearProgressIndicator(
                 progress = { videoLink.progress },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -197,7 +200,7 @@ private fun PreviewVideoLink() {
                 playedDuration = 2700000L,
                 subtitleUrl = "https://example.com/subtitles.srt"
             ).apply {
-                linkInvalid = "File format not supported"
+//                linkInvalid = "File format not supported"
             }
         )
     }
