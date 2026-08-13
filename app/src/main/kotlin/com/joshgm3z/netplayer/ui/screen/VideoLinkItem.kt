@@ -126,7 +126,7 @@ fun VideoLinkItem(
                             append(it.toTextTime())
                         }
                     },
-                    style = typography.bodySmall,
+                    style = typography.labelMedium,
                     color = subTextColor(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
@@ -140,17 +140,31 @@ fun VideoLinkItem(
                         modifier = Modifier.size(16.dp)
                     )
                 }
+
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+
+                if (videoLink.progress > 0 && isLinkValid) Row(modifier = Modifier.width(180.dp)) {
+                    Text(
+                        text = "${(videoLink.progress * 100).toInt()}%",
+                        style = typography.labelMedium,
+                        color = subTextColor(),
+                    )
+                    LinearProgressIndicator(
+                        progress = { videoLink.progress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp, start = 5.dp),
+                        drawStopIndicator = {},
+                        trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
+                        color = colorScheme.primaryContainer
+                    )
+                }
             }
 
-            if (videoLink.progress > 0 && isLinkValid) LinearProgressIndicator(
-                progress = { videoLink.progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 5.dp),
-                drawStopIndicator = {},
-                trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
-                color = colorScheme.primaryContainer
-            )
             videoLink.linkInvalid?.let {
                 ErrorText(it)
             }
