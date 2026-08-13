@@ -57,6 +57,8 @@ fun VideoLinkItem(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isLinkValid = videoLink.linkInvalid == null
+
+    val titleColor = if (isFocused) colorScheme.primary else textColor()
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
@@ -79,7 +81,7 @@ fun VideoLinkItem(
         Icon(
             imageVector = if (isFocused && isLinkValid) Icons.Default.PlayArrow
             else Icons.Default.Link,
-            tint = colorScheme.primary,
+            tint = titleColor,
             contentDescription = null,
             modifier = Modifier
                 .background(
@@ -95,14 +97,15 @@ fun VideoLinkItem(
             modifier = Modifier.padding(start = 10.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            if (!videoLink.title.isEmpty()) Text(
-                text = videoLink.title,
-                style = typography.titleMedium,
-                color = if (isFocused) colorScheme.primary
-                else textColor(),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
-            )
+            if (!videoLink.title.isEmpty()) {
+                Text(
+                    text = videoLink.title,
+                    style = typography.titleMedium,
+                    color = titleColor,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
+                )
+            }
 
             Text(
                 text = videoLink.url,
