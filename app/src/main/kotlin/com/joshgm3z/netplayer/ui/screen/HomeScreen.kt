@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Replay
@@ -40,9 +41,9 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
-import androidx.tv.material3.Surface
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
+import com.joshgm3z.netplayer.ui.theme.cardColor
 import com.joshgm3z.netplayer.ui.theme.subTextColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
@@ -151,7 +152,15 @@ fun CustomButton(
 
 @Composable
 fun QrCode(qrCode: Bitmap?) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .background(
+                color = cardColor(),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(20.dp)
+    ) {
         Box(
             modifier = Modifier
                 .size(200.dp)
@@ -176,7 +185,7 @@ fun QrCode(qrCode: Bitmap?) {
             style = typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(20.dp)
+                .padding(top = 20.dp)
                 .width(180.dp)
         )
     }
@@ -224,9 +233,21 @@ private fun PreviewHomeScreenContent() {
         HomeScreenContent(
             HomeUiState(
                 videoLinks = listOf(
-                    VideoLink("https://example.com/video1", "Video 1", 1202012L, 12121L, 32323L),
-                    VideoLink("https://example.com/video2", "Video 2", 1202012L, 12121L, 32323L),
-                    VideoLink("https://example.com/video3", "Video 3", 1202012L, 12121L, 32323L),
+                    VideoLink(
+                        "https://example.com/video1",
+                        "Video 1",
+                        1202012L,
+                        6212100L,
+                        3232300L
+                    ),
+                    VideoLink(
+                        "https://example.com/video2",
+                        "Video 2",
+                        1202012L,
+                        4212100L,
+                        3232300L
+                    ),
+                    VideoLink("https://example.com/video3", "Video 3", 1202012L, 3212100L, 120000L),
                 ),
                 qrCode = null
             )

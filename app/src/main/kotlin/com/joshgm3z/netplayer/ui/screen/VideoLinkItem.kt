@@ -71,10 +71,7 @@ fun VideoLinkItem(
                 color = if (isFocused) colorScheme.primary else Color.Transparent,
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(
-                color = if (!isFocused) cardColor()
-                else colorScheme.primaryContainer.copy(alpha = 0.3f)
-            )
+            .background(color = cardColor())
             .width(450.dp)
             .padding(vertical = 13.dp, horizontal = 18.dp),
     ) {
@@ -100,7 +97,8 @@ fun VideoLinkItem(
             if (!videoLink.title.isEmpty()) Text(
                 text = videoLink.title,
                 style = typography.titleMedium,
-                color = textColor(),
+                color = if (isFocused) colorScheme.primary
+                else textColor(),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
             )
