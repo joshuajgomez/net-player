@@ -7,7 +7,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.joshgm3z.netplayer.ui.screen.AppUpdateDialog
-import com.joshgm3z.netplayer.ui.screen.ErrorDialog
+import com.joshgm3z.netplayer.ui.screen.ErrorScreen
 import com.joshgm3z.netplayer.ui.screen.HomeScreen
 import com.joshgm3z.netplayer.ui.screen.PlayerScreen
 import com.joshgm3z.subtitletrack.view.TrackSelectorDialog
@@ -35,7 +35,7 @@ fun TvNavHost() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = NavDest.Home
+        startDestination = NavDest.Error("Some test error")
     ) {
         composable<NavDest.Home> {
             HomeScreen(navigate = { navController.navigate(it) })
@@ -57,10 +57,16 @@ fun TvNavHost() {
         }
         dialog<NavDest.Error> {
             val route = it.toRoute<NavDest.Error>()
-            ErrorDialog(
+            ErrorScreen(
                 summary = route.summary,
                 message = "Error playing video",
-                onDismissClick = { navController.popBackStack() }
+                onDismissClick = {
+                    navController.navigate(NavDest.Home) {
+                        popUpTo<NavDest.Home> {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }
