@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClosedCaption
+import androidx.compose.material.icons.filled.ClosedCaptionOff
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PlayArrow
@@ -133,7 +134,7 @@ fun VideoLinkItem(
                 Spacer(Modifier.size(6.dp))
                 videoLink.subtitleUrl?.let {
                     Icon(
-                        imageVector = Icons.Default.ClosedCaption,
+                        imageVector = Icons.Default.ClosedCaptionOff,
                         contentDescription = null,
                         tint = colorScheme.onBackground.copy(alpha = 0.4f),
                         modifier = Modifier.size(16.dp)
