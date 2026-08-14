@@ -66,19 +66,21 @@ fun AppUpdateDialogContent(
                 // WCAG: High contrast for main heading
                 color = colorScheme.onSurface,
             )
-            Spacer(Modifier.size(12.dp))
-            Text(
-                text = uiState.subtitle ?: "",
-                style = typography.bodyLarge,
-                // WCAG: Standard contrast for secondary text
-                color = colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.size(8.dp))
+            uiState.subtitle?.let {
+                Spacer(Modifier.size(12.dp))
+                Text(
+                    text = it,
+                    style = typography.bodyLarge,
+                    // WCAG: Standard contrast for secondary text
+                    color = colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                )
+            }
+            Spacer(Modifier.size(10.dp))
             Text(
                 text = "Current version ${BuildConfig.VERSION_NAME}",
                 style = typography.labelMedium,
                 // WCAG: Standard contrast for secondary text
-                color = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                color = colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
             )
         }
 
