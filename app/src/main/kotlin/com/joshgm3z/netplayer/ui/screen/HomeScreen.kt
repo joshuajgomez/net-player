@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.tv.material3.Text
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.asImageBitmap
@@ -38,13 +39,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
+import androidx.tv.material3.Text
 import com.joshgm3z.netplayer.repository.VideoLink
 import com.joshgm3z.netplayer.ui.NavDest
-import com.joshgm3z.netplayer.ui.theme.cardColor
-import com.joshgm3z.netplayer.ui.theme.subTextColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.viewmodel.HomeUiState
@@ -109,15 +110,18 @@ fun Settings(
     onAppUpdateClick: () -> Unit,
     onDeleteAllClick: () -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(230.dp)
+    ) {
         QrCode(qrCode)
-        Spacer(Modifier.size(20.dp))
+        Spacer(Modifier.size(24.dp)) // Slightly increased for M3 spacing
         CustomButton(
             text = "Delete all",
             imageVector = Icons.Default.Delete,
             onClick = onDeleteAllClick
         )
-        Spacer(Modifier.size(10.dp))
+        Spacer(Modifier.size(12.dp))
         CustomButton(
             text = "Update App",
             imageVector = Icons.Default.Replay,
@@ -132,7 +136,14 @@ fun CustomButton(
     imageVector: ImageVector? = null,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, modifier = Modifier.width(200.dp)) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.colors(
+            containerColor = colorScheme.surface,
+        ),
+        shape = ButtonDefaults.shape(shape = RoundedCornerShape(8.dp))
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -141,11 +152,12 @@ fun CustomButton(
             imageVector?.let {
                 Icon(
                     imageVector = it,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
                 )
-                Spacer(Modifier.size(5.dp))
+                Spacer(Modifier.size(8.dp))
             }
-            Text(text)
+            Text(text = text, style = typography.labelLarge)
         }
     }
 }
@@ -156,32 +168,42 @@ fun QrCode(qrCode: Bitmap?) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(
-                color = cardColor(),
+                // WCAG: Using surfaceVariant ensures contrast against background
+                color = colorScheme.surface,
                 shape = RoundedCornerShape(10.dp)
             )
             .padding(20.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(200.dp)
-                .background(color = colorScheme.primary)
+                .aspectRatio(1f)
+                .clip(shape = RoundedCornerShape(8.dp))
+                .background(
+                    // Container for the QR code to keep it legible
+                    color = colorScheme.surfaceVariant,
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                color = colorScheme.onPrimary
-            )
-            qrCode?.let {
+            if (qrCode == null) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp),
+                    color = colorScheme.onSurfaceVariant,
+                    strokeWidth = 3.dp
+                )
+            } else {
                 Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                    bitmap = qrCode.asImageBitmap(),
+                    contentDescription = "QR Code to add URLs",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
                 )
             }
         }
         Text(
             text = "Scan the QR code to add new urls",
-            color = subTextColor(),
+            // WCAG: onSurfaceVariant provides accessible contrast for secondary text
+            color = colorScheme.onSurfaceVariant,
             style = typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -202,16 +224,17 @@ fun VideoLinks(
     }
 
     Column(modifier = Modifier.width(450.dp)) {
-        if (videoLinks.isNullOrEmpty()) Text(
-            text = when {
-                videoLinks == null -> "Loading..."
-                videoLinks.isEmpty() -> "Welcome to NetPlayer!"
-                else -> return@Column
-            },
-            style = typography.titleLarge,
-            color = subTextColor(),
-        )
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        if (videoLinks.isNullOrEmpty()) {
+            Text(
+                text = when {
+                    videoLinks == null -> "Loading..."
+                    else -> "Welcome to NetPlayer!"
+                },
+                style = typography.headlineSmall,
+                color = colorScheme.onSurfaceVariant,
+            )
+        }
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             itemsIndexed(videoLinks ?: emptyList()) { index, item ->
                 VideoLinkItem(
                     videoLink = item,

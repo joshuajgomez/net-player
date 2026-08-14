@@ -10,15 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ClosedCaption
 import androidx.compose.material.icons.filled.ClosedCaptionOff
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.NotInterested
 import androidx.compose.material.icons.filled.PlayArrow
@@ -41,9 +40,6 @@ import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
 import com.joshgm3z.netplayer.repository.VideoLink
-import com.joshgm3z.netplayer.ui.theme.cardColor
-import com.joshgm3z.netplayer.ui.theme.subTextColor
-import com.joshgm3z.netplayer.ui.theme.textColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.util.relativeTime
@@ -59,25 +55,26 @@ fun VideoLinkItem(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isLinkValid = videoLink.linkInvalid == null
 
-    val titleColor = if (isFocused) colorScheme.primary else textColor()
+    val titleColor = if (isFocused) colorScheme.primary else colorScheme.onSurface
+    val subTextColor = colorScheme.onSurfaceVariant
+
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(12.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = {
-                    if (isLinkValid) onClick()
-                }
+                onClick = { if (isLinkValid) onClick() }
             )
             .border(
                 width = 2.dp,
                 color = if (isFocused) colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(12.dp)
             )
-            .background(color = cardColor())
+            // Fix: surfaceVariant is commonly used for cards in M3 TV if surfaceContainer is missing
+            .background(color = colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .width(450.dp)
-            .padding(vertical = 13.dp, horizontal = 18.dp),
+            .padding(vertical = 16.dp, horizontal = 18.dp),
     ) {
         Row {
             Icon(
@@ -86,23 +83,23 @@ fun VideoLinkItem(
                     isFocused -> Icons.Default.PlayArrow
                     else -> Icons.Default.Link
                 },
-                tint = titleColor,
+                tint = if (isFocused) colorScheme.onPrimaryContainer else titleColor,
                 contentDescription = null,
                 modifier = Modifier
                     .background(
                         color = if (isFocused) colorScheme.primaryContainer
-                        else colorScheme.onBackground.copy(alpha = 0.2f),
+                        else colorScheme.surfaceVariant,
                         shape = CircleShape
                     )
-                    .padding(5.dp)
+                    .padding(6.dp)
                     .size(20.dp)
             )
 
             Column(
-                modifier = Modifier.padding(start = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                modifier = Modifier.padding(start = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                if (!videoLink.title.isEmpty()) {
+                if (videoLink.title.isNotEmpty()) {
                     Text(
                         text = videoLink.title,
                         style = typography.titleMedium,
@@ -115,64 +112,69 @@ fun VideoLinkItem(
                 Text(
                     text = videoLink.url,
                     style = typography.bodySmall,
-                    color = textColor().copy(alpha = 0.5f),
+                    color = subTextColor,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    textDecoration = if (!isLinkValid) TextDecoration.LineThrough
-                    else TextDecoration.None
+                    textDecoration = if (!isLinkValid) TextDecoration.LineThrough else TextDecoration.None
                 )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
                     Text(
                         text = buildAnnotatedString {
                             val dot = "  •  "
                             append(videoLink.added.relativeTime())
                             videoLink.totalDuration?.let {
-                                withStyle(style = SpanStyle(color = colorScheme.primary)) {
+                                withStyle(style = SpanStyle(color = colorScheme.secondary)) {
                                     append(dot)
                                 }
                                 append(it.toTextTime())
                             }
                         },
                         style = typography.labelMedium,
-                        color = subTextColor(),
+                        color = subTextColor,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
-                    Spacer(Modifier.size(6.dp))
+
                     videoLink.subtitleUrl?.let {
+                        Spacer(Modifier.size(8.dp))
                         Icon(
                             imageVector = Icons.Default.ClosedCaptionOff,
-                            contentDescription = null,
-                            tint = colorScheme.onBackground.copy(alpha = 0.4f),
+                            contentDescription = "Subtitles available",
+                            tint = subTextColor,
                             modifier = Modifier.size(16.dp)
                         )
                     }
 
-                    Spacer(
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
+                    Spacer(Modifier.weight(1f))
 
-                    if (videoLink.progress > 0 && isLinkValid) Row(modifier = Modifier.width(180.dp)) {
-                        Text(
-                            text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
-                            style = typography.labelMedium,
-                            color = subTextColor(),
-                        )
-                        LinearProgressIndicator(
-                            progress = { videoLink.progress },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 5.dp, start = 5.dp),
-                            drawStopIndicator = {},
-                            trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
-                            color = colorScheme.primaryContainer
-                        )
+                    if (videoLink.progress > 0 && isLinkValid) {
+                        Row(
+                            modifier = Modifier.width(160.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
+                                style = typography.labelSmall,
+                                color = subTextColor,
+                            )
+                            LinearProgressIndicator(
+                                progress = { videoLink.progress },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp)
+                                    .height(4.dp)
+                                    .clip(CircleShape),
+                                trackColor = colorScheme.surfaceVariant,
+                                color = colorScheme.primary,
+                                drawStopIndicator = {}
+                            )
+                        }
                     }
                 }
-
             }
         }
         videoLink.linkInvalid?.let {
@@ -186,18 +188,20 @@ fun ErrorText(error: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp)
+            .padding(top = 12.dp)
             .background(
-                color = colorScheme.tertiaryContainer,
-                shape = RoundedCornerShape(4.dp)
+                // M3 Standard: ErrorContainer for background, OnErrorContainer for text
+                color = colorScheme.errorContainer,
+                shape = RoundedCornerShape(8.dp)
             )
-            .padding(horizontal = 8.dp, vertical = 5.dp),
-        horizontalArrangement = Arrangement.Center
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = error,
-            color = colorScheme.onTertiaryContainer,
-            style = typography.bodyMedium
+            color = colorScheme.onErrorContainer,
+            style = typography.labelMedium
         )
     }
 }
