@@ -58,7 +58,7 @@ jobs:
           fi
 
       - name: Build Release APK (:app)
-        run: ./gradlew ${{ env.GRADLE_TASK }} -PversionNameOverride=${{ env.RELEASE_TAG }} -PversionCodeOverride=${{ env.RELEASE_CODE }}
+        run: ./gradlew ${{ env.GRADLE_TASK }} -PversionNameOverride=${{ env.RELEASE_TAG_VERSION }} -PversionCodeOverride=${{ env.RELEASE_CODE }}
 
       - name: Clear Existing Release and Tag
         if: github.event_name != 'pull_request'
