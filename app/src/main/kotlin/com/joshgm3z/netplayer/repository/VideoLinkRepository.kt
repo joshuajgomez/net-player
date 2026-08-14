@@ -16,7 +16,7 @@ class VideoLinkRepository
     private val firestore: FirestoreWrapper,
     private val dataStoreWrapper: DatastoreWrapper,
     private val scope: CoroutineScope,
-    private val urlValidityChecker: UrlValidityChecker
+    private val urlChecker: UrlChecker
 ) {
 
     suspend fun getSessionId(): String =
@@ -63,7 +63,7 @@ class VideoLinkRepository
         return videoLinkDao.getAllFlow().map {
             it.map { videoLink ->
                 videoLink.apply {
-                    linkInvalid = urlValidityChecker.isUrlInvalid(videoLink.url)
+                    linkInvalid = urlChecker.isUrlInvalid(videoLink.url)
                 }
             }
         }

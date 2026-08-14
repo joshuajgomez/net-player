@@ -10,7 +10,7 @@ import javax.inject.Inject
 import kotlin.text.lowercase
 import kotlin.text.startsWith
 
-class UrlValidityChecker
+class UrlChecker
 @Inject constructor() {
 
     suspend fun isUrlInvalid(url: String): String? = when {
@@ -31,7 +31,8 @@ class UrlValidityChecker
                 val responseCode = connection.responseCode
 
                 // Check if response is successful (200 OK)
-                if (responseCode !in 200..299) {
+                // 429 HTTP_TOO_MANY_REQUESTS
+                if (responseCode != 429 && responseCode !in 200..299) {
                     return@withContext when (responseCode) {
                         HttpURLConnection.HTTP_NOT_FOUND -> "File not found"
                         HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_UNAUTHORIZED -> "Access denied"
