@@ -2,6 +2,7 @@ package com.joshgm3z.netplayer.repository
 
 import android.util.Patterns
 import android.webkit.MimeTypeMap
+import com.joshgm3z.netplayer.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
@@ -21,6 +22,7 @@ class UrlChecker
 
     private suspend fun doesUrlProvideFile(urlString: String): String? =
         withContext(Dispatchers.IO) {
+            Logger.debug("urlString=$urlString")
             try {
                 val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
@@ -52,6 +54,8 @@ class UrlChecker
                 // no internet
                 null
             }
+        }.apply {
+            Logger.debug("isInvalid=$this")
         }
 
     private fun isMediaExtension(url: String): Boolean {

@@ -79,8 +79,7 @@ fun VideoLinkItem(
         Row {
             Icon(
                 imageVector = when {
-                    !isLinkValid -> Icons.Default.NotInterested
-                    isFocused -> Icons.Default.PlayArrow
+                    isFocused && isLinkValid -> Icons.Default.PlayArrow
                     else -> Icons.Default.Link
                 },
                 tint = if (isFocused) colorScheme.onPrimaryContainer else titleColor,
@@ -115,7 +114,6 @@ fun VideoLinkItem(
                     color = subTextColor,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    textDecoration = if (!isLinkValid) TextDecoration.LineThrough else TextDecoration.None
                 )
 
                 Row(
@@ -186,22 +184,21 @@ fun VideoLinkItem(
 @Composable
 fun ErrorText(error: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp)
-            .background(
-                // M3 Standard: ErrorContainer for background, OnErrorContainer for text
-                color = colorScheme.errorContainer,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = Icons.Default.NotInterested,
+            contentDescription = null,
+            modifier = Modifier.size(15.dp),
+            tint = colorScheme.primary
+        )
         Text(
             text = error,
-            color = colorScheme.onErrorContainer,
-            style = typography.labelMedium
+            color = colorScheme.primary,
+            style = typography.labelMedium,
+            modifier = Modifier.padding(start = 5.dp)
         )
     }
 }

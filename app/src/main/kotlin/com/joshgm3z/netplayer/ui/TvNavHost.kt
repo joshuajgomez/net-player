@@ -35,7 +35,7 @@ fun TvNavHost() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = NavDest.Error("Some test error")
+        startDestination = NavDest.Home
     ) {
         composable<NavDest.Home> {
             HomeScreen(navigate = { navController.navigate(it) })

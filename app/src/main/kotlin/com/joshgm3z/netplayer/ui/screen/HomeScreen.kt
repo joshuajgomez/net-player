@@ -194,9 +194,7 @@ fun QrCode(qrCode: Bitmap?) {
                 Image(
                     bitmap = qrCode.asImageBitmap(),
                     contentDescription = "QR Code to add URLs",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
