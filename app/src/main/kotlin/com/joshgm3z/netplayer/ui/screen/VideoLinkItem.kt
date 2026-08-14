@@ -56,11 +56,11 @@ fun VideoLinkItem(
     val isLinkValid = videoLink.linkInvalid == null
 
     val titleColor = if (isFocused) colorScheme.primary else colorScheme.onSurface
-    val subTextColor = colorScheme.onSurfaceVariant
+    val subTextColor = colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
 
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(8.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -69,11 +69,9 @@ fun VideoLinkItem(
             .border(
                 width = 2.dp,
                 color = if (isFocused) colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(8.dp)
             )
-            // Fix: surfaceVariant is commonly used for cards in M3 TV if surfaceContainer is missing
-            .background(color = colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .width(450.dp)
+            .background(color = colorScheme.surfaceVariant.copy(alpha = 0.3f))
             .padding(vertical = 16.dp, horizontal = 18.dp),
     ) {
         Row {
@@ -157,7 +155,7 @@ fun VideoLinkItem(
                             Text(
                                 text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
                                 style = typography.labelSmall,
-                                color = subTextColor,
+                                color = colorScheme.primary,
                             )
                             LinearProgressIndicator(
                                 progress = { videoLink.progress },

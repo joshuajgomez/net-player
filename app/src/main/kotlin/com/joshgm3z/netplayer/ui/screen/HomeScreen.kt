@@ -87,7 +87,7 @@ private fun HomeScreenContent(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
             .fillMaxSize()
-            .padding(30.dp),
+            .padding(20.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -112,7 +112,7 @@ fun Settings(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(230.dp)
+        modifier = Modifier.width(200.dp)
     ) {
         QrCode(qrCode)
         Spacer(Modifier.size(24.dp)) // Slightly increased for M3 spacing
@@ -172,7 +172,7 @@ fun QrCode(qrCode: Bitmap?) {
                 color = colorScheme.surface,
                 shape = RoundedCornerShape(10.dp)
             )
-            .padding(20.dp)
+            .padding(10.dp)
     ) {
         Box(
             modifier = Modifier
@@ -221,7 +221,7 @@ fun VideoLinks(
         if (!videoLinks.isNullOrEmpty()) firstItemRequester.requestFocus()
     }
 
-    Column(modifier = Modifier.width(450.dp)) {
+    Column(modifier = Modifier.width(480.dp)) {
         if (videoLinks.isNullOrEmpty()) {
             Text(
                 text = when {
