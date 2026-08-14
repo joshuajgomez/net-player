@@ -34,8 +34,8 @@ class UrlChecker
                 // 429 HTTP_TOO_MANY_REQUESTS
                 if (responseCode != 429 && responseCode !in 200..299) {
                     return@withContext when (responseCode) {
-                        HttpURLConnection.HTTP_NOT_FOUND -> "File not found"
-                        HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_UNAUTHORIZED -> "Access denied"
+                        HttpURLConnection.HTTP_NOT_FOUND -> "Invalid link"
+                        HttpURLConnection.HTTP_FORBIDDEN, HttpURLConnection.HTTP_UNAUTHORIZED -> "No access to link"
                         HttpURLConnection.HTTP_BAD_GATEWAY, HttpURLConnection.HTTP_UNAVAILABLE -> "Server unavailable"
                         else -> "Error connecting to server ($responseCode)"
                     }

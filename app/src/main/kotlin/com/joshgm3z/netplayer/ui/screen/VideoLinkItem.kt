@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ClosedCaption
 import androidx.compose.material.icons.filled.ClosedCaptionOff
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.NotInterested
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
@@ -59,7 +60,7 @@ fun VideoLinkItem(
     val isLinkValid = videoLink.linkInvalid == null
 
     val titleColor = if (isFocused) colorScheme.primary else textColor()
-    Row(
+    Column(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .clickable(
@@ -78,99 +79,104 @@ fun VideoLinkItem(
             .width(450.dp)
             .padding(vertical = 13.dp, horizontal = 18.dp),
     ) {
-        Icon(
-            imageVector = if (isFocused && isLinkValid) Icons.Default.PlayArrow
-            else Icons.Default.Link,
-            tint = titleColor,
-            contentDescription = null,
-            modifier = Modifier
-                .background(
-                    color = if (isFocused) colorScheme.primaryContainer
-                    else colorScheme.onBackground.copy(alpha = 0.2f),
-                    shape = CircleShape
-                )
-                .padding(5.dp)
-                .size(20.dp)
-        )
-
-        Column(
-            modifier = Modifier.padding(start = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            if (!videoLink.title.isEmpty()) {
-                Text(
-                    text = videoLink.title,
-                    style = typography.titleMedium,
-                    color = titleColor,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2,
-                )
-            }
-
-            Text(
-                text = videoLink.url,
-                style = typography.bodySmall,
-                color = textColor().copy(alpha = 0.5f),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                textDecoration = if (!isLinkValid) TextDecoration.LineThrough
-                else TextDecoration.None
+        Row {
+            Icon(
+                imageVector = when {
+                    !isLinkValid -> Icons.Default.NotInterested
+                    isFocused -> Icons.Default.PlayArrow
+                    else -> Icons.Default.Link
+                },
+                tint = titleColor,
+                contentDescription = null,
+                modifier = Modifier
+                    .background(
+                        color = if (isFocused) colorScheme.primaryContainer
+                        else colorScheme.onBackground.copy(alpha = 0.2f),
+                        shape = CircleShape
+                    )
+                    .padding(5.dp)
+                    .size(20.dp)
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier.padding(start = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                if (!videoLink.title.isEmpty()) {
+                    Text(
+                        text = videoLink.title,
+                        style = typography.titleMedium,
+                        color = titleColor,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                    )
+                }
+
                 Text(
-                    text = buildAnnotatedString {
-                        val dot = "  •  "
-                        append(videoLink.added.relativeTime())
-                        videoLink.totalDuration?.let {
-                            withStyle(style = SpanStyle(color = colorScheme.primary)) {
-                                append(dot)
-                            }
-                            append(it.toTextTime())
-                        }
-                    },
-                    style = typography.labelMedium,
-                    color = subTextColor(),
+                    text = videoLink.url,
+                    style = typography.bodySmall,
+                    color = textColor().copy(alpha = 0.5f),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                )
-                Spacer(Modifier.size(6.dp))
-                videoLink.subtitleUrl?.let {
-                    Icon(
-                        imageVector = Icons.Default.ClosedCaptionOff,
-                        contentDescription = null,
-                        tint = colorScheme.onBackground.copy(alpha = 0.4f),
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-
-                Spacer(
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                    textDecoration = if (!isLinkValid) TextDecoration.LineThrough
+                    else TextDecoration.None
                 )
 
-                if (videoLink.progress > 0 && isLinkValid) Row(modifier = Modifier.width(180.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
+                        text = buildAnnotatedString {
+                            val dot = "  •  "
+                            append(videoLink.added.relativeTime())
+                            videoLink.totalDuration?.let {
+                                withStyle(style = SpanStyle(color = colorScheme.primary)) {
+                                    append(dot)
+                                }
+                                append(it.toTextTime())
+                            }
+                        },
                         style = typography.labelMedium,
                         color = subTextColor(),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
                     )
-                    LinearProgressIndicator(
-                        progress = { videoLink.progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp, start = 5.dp),
-                        drawStopIndicator = {},
-                        trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
-                        color = colorScheme.primaryContainer
-                    )
-                }
-            }
+                    Spacer(Modifier.size(6.dp))
+                    videoLink.subtitleUrl?.let {
+                        Icon(
+                            imageVector = Icons.Default.ClosedCaptionOff,
+                            contentDescription = null,
+                            tint = colorScheme.onBackground.copy(alpha = 0.4f),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
 
-            videoLink.linkInvalid?.let {
-                ErrorText(it)
+                    Spacer(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+
+                    if (videoLink.progress > 0 && isLinkValid) Row(modifier = Modifier.width(180.dp)) {
+                        Text(
+                            text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
+                            style = typography.labelMedium,
+                            color = subTextColor(),
+                        )
+                        LinearProgressIndicator(
+                            progress = { videoLink.progress },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp, start = 5.dp),
+                            drawStopIndicator = {},
+                            trackColor = colorScheme.onBackground.copy(alpha = 0.1f),
+                            color = colorScheme.primaryContainer
+                        )
+                    }
+                }
+
             }
+        }
+        videoLink.linkInvalid?.let {
+            ErrorText(it)
         }
     }
 }
@@ -186,15 +192,8 @@ fun ErrorText(error: String) {
                 shape = RoundedCornerShape(4.dp)
             )
             .padding(horizontal = 8.dp, vertical = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Error,
-            contentDescription = null,
-            tint = colorScheme.onTertiaryContainer,
-            modifier = Modifier.size(18.dp)
-        )
-        Spacer(Modifier.size(5.dp))
         Text(
             text = error,
             color = colorScheme.onTertiaryContainer,
@@ -213,10 +212,24 @@ private fun PreviewVideoLink() {
                 url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",
                 added = System.currentTimeMillis() - 300000,
                 totalDuration = 4980000L,
-                playedDuration = 1L,
+                playedDuration = 2980000L,
                 subtitleUrl = "https://example.com/subtitles.srt"
+            )
+        )
+    }
+}
+
+@DarkPreview
+@Composable
+private fun PreviewVideoLink_Error() {
+    DarkSurface {
+        VideoLinkItem(
+            videoLink = VideoLink(
+                title = "Sample Video Link",
+                url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",
+                added = System.currentTimeMillis() - 300000,
             ).apply {
-//                linkInvalid = "File format not supported"
+                linkInvalid = "File format not supported"
             }
         )
     }
