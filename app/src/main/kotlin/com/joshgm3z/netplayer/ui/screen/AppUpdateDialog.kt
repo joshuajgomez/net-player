@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
-import com.joshgm3z.netplayer.ui.theme.subTextColor
-import com.joshgm3z.netplayer.ui.theme.textColor
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.viewmodel.ButtonAction
@@ -57,48 +58,69 @@ fun AppUpdateDialogContent(
             .fillMaxSize(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = uiState.title,
                 style = typography.headlineLarge,
-                color = textColor(),
+                // WCAG: High contrast for main heading
+                color = colorScheme.onSurface,
             )
-            Spacer(Modifier.size(10.dp))
+            Spacer(Modifier.size(12.dp))
             Text(
                 text = uiState.subtitle ?: "",
                 style = typography.bodyLarge,
-                color = subTextColor(),
+                // WCAG: Standard contrast for secondary text
+                color = colorScheme.onSurfaceVariant,
             )
         }
-        if (uiState.enableButtons) Column {
-            val firstItemRequester = remember { FocusRequester() }
-            LaunchedEffect(Unit) {
-                firstItemRequester.requestFocus()
-            }
-            Button(
-                onClick = onActionClick,
-                modifier = Modifier
-                    .width(200.dp)
-                    .focusRequester(firstItemRequester)
-            ) {
-                Text(
-                    uiState.buttonAction.text,
+
+        Spacer(Modifier.width(48.dp))
+
+        if (uiState.enableButtons) {
+            Column(Modifier.width(250.dp)) {
+                val firstItemRequester = remember { FocusRequester() }
+                LaunchedEffect(Unit) {
+                    firstItemRequester.requestFocus()
+                }
+                Button(
+                    onClick = onActionClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(firstItemRequester),
+                    colors = ButtonDefaults.colors(
+                        containerColor = colorScheme.surface,
+                    ),
+                    shape = ButtonDefaults.shape(shape = RoundedCornerShape(8.dp))
+                ) {
+                    Text(
+                        uiState.buttonAction.text,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Spacer(Modifier.size(12.dp))
+                Button(
+                    onClick = onDismissClick,
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
+                    colors = ButtonDefaults.colors(
+                        containerColor = colorScheme.surface,
+                    ),
+                    shape = ButtonDefaults.shape(shape = RoundedCornerShape(8.dp))
+                ) {
+                    Text(
+                        "Dismiss",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-            Spacer(Modifier.size(10.dp))
-            Button(
-                onClick = onDismissClick,
-                modifier = Modifier.width(200.dp)
-            ) {
-                Text(
-                    "Dismiss",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else CircularProgressIndicator(modifier = Modifier.padding(top = 10.dp))
+        } else {
+            // Loading state uses primary color to indicate activity
+            CircularProgressIndicator(
+                modifier = Modifier.padding(top = 10.dp),
+                color = colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
