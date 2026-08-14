@@ -93,7 +93,7 @@ class FileDownloader
         }
     }
 
-    suspend fun getLatestApkReleaseName(apkUrl: String): String? {
+    fun getLatestApkReleaseName(apkUrl: String): String? {
         val url = URL(apkUrl)
         val connection = url.openConnection() as HttpURLConnection
 

@@ -77,7 +77,7 @@ class SelfUpdateViewModel
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            delay(2000)
+            delay(1000)
             val releaseName = fileDownloader.getLatestApkReleaseName(appTagUrl)
             Logger.debug("releaseName = [$releaseName]")
             _uiState.update {

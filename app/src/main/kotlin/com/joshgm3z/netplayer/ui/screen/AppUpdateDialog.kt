@@ -27,6 +27,7 @@ import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.MaterialTheme.colorScheme
 import androidx.tv.material3.MaterialTheme.typography
 import androidx.tv.material3.Text
+import com.joshgm3z.netplayer.BuildConfig
 import com.joshgm3z.netplayer.ui.util.DarkPreview
 import com.joshgm3z.netplayer.ui.util.DarkSurface
 import com.joshgm3z.netplayer.viewmodel.ButtonAction
@@ -71,6 +72,13 @@ fun AppUpdateDialogContent(
                 style = typography.bodyLarge,
                 // WCAG: Standard contrast for secondary text
                 color = colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.size(8.dp))
+            Text(
+                text = "Current version ${BuildConfig.VERSION_NAME}",
+                style = typography.labelMedium,
+                // WCAG: Standard contrast for secondary text
+                color = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             )
         }
 
