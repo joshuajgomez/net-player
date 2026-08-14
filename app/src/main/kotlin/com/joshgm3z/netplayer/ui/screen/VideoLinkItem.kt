@@ -152,7 +152,7 @@ fun VideoLinkItem(
 
                 if (videoLink.progress > 0 && isLinkValid) Row(modifier = Modifier.width(180.dp)) {
                     Text(
-                        text = "${(videoLink.progress * 100).toInt()}%",
+                        text = "${(videoLink.progress * 100).toInt().coerceAtLeast(1)}%",
                         style = typography.labelMedium,
                         color = subTextColor(),
                     )
@@ -213,7 +213,7 @@ private fun PreviewVideoLink() {
                 url = "https://example.com/withsomelongassnameandurl4223/fkfjjkcomingmorethanonce",
                 added = System.currentTimeMillis() - 300000,
                 totalDuration = 4980000L,
-                playedDuration = 2700000L,
+                playedDuration = 1L,
                 subtitleUrl = "https://example.com/subtitles.srt"
             ).apply {
 //                linkInvalid = "File format not supported"
